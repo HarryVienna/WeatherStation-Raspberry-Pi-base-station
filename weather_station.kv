@@ -1,0 +1,415 @@
+#:import re re
+#:import RepeatButton repeat_button
+#:import CloseButton close_button
+#:import KameraTimingWidget kamera_timing_widget
+#:import VentilLayout ventil_layout
+#:import KameraLayout kamera_layout
+#:import TimingInput timing_input
+
+<RepeatButton>:
+    font_size: 25
+    size: 130,50
+    size_hint: None, None
+
+<CloseButton>:
+    # canvas.before:
+    #     PushMatrix
+    #     Rotate:
+    #         angle: root.angle
+    #         axis: 0, 0, 1
+    #         origin: root.center
+    # canvas.after:
+    #     PopMatrix
+    opacity: 0
+    disabled: True
+    size_hint: None, None
+    size: 30, 30
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    background_normal: 'images/close.png'
+    background_down: 'images/close.png'
+
+
+
+<TropfenTimingWidget>:
+    canvas.before:
+        Color:
+            #rgba: 255/255, 255/255, 255/255, 0.7
+            rgba: 32/255, 32/255, 32/255, 1
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+
+    padding: 2
+    size_hint: None, None
+    size: 139, 110
+    TimingInput:
+        id: tropfen_start
+        font_size: 24
+        padding: [0, 1, 4, 1]
+        pos: root.x + 37, root.y + 41
+        size: root.width - 74, 30
+        size_hint: None, None
+        halign: 'right'
+        multiline: False
+        hint_text: "Start"
+        hint_text_color: (160/255, 160/255, 160/255, 1)
+        text: root.tropfen_start
+        on_text:    root.update_start(self.text)
+        #on_text: if not re.search('^[0-9]{0,3}(\.[0-9]?)?$', self.text): root.update_start(self.text)
+    RepeatButton:
+        text: "—"
+        pos: root.x + 6, root.y + 40
+        size: 30, 30
+        on_press: root.pressed_start_minus(0.1)
+        on_repeat_press: root.pressed_start_minus(0.1)
+        on_long_repeat_press: root.pressed_start_minus(1)
+    RepeatButton:
+        text: "+"
+        pos: root.x + root.width - 36, root.y + 40
+        size: 30, 30
+        on_press: root.pressed_start_plus(0.1)
+        on_repeat_press: root.pressed_start_plus(0.1)
+        on_long_repeat_press: root.pressed_start_plus(1)
+    TimingInput:
+        id: tropfen_dauer
+        font_size: 24
+        padding: [0, 1, 4, 1]
+        pos: root.x + 37, root.y + 6
+        size: root.width - 74, 30
+        size_hint: None, None
+        halign: 'right'
+        multiline: False
+        hint_text: "Delta"
+        hint_text_color: (160/255, 160/255, 160/255, 1)
+        text: root.tropfen_dauer
+        on_text: root.update_dauer(self.text)
+    RepeatButton:
+        text:"—"
+        pos:  root.x + 6, root.y + 5
+        size: 30,30
+        on_press: root.pressed_dauer_minus(0.1)
+        on_repeat_press: root.pressed_dauer_minus(0.1)
+        on_long_repeat_press: root.pressed_dauer_minus(1)
+    RepeatButton:
+        text:"+"
+        pos: root.x + root.width - 36,  root.y + 5
+        size: 30,30
+        on_press: root.pressed_dauer_plus(0.1)
+        on_repeat_press: root.pressed_dauer_plus(0.1)
+        on_long_repeat_press: root.pressed_dauer_plus(1)
+    ToggleButton:
+        id: tropfen_aktiv
+        size: 45,30
+        size_hint: None, None
+        pos: root.x + 87, root.y + 75
+        font_size: 20
+        text: 'Aus' if self.state == 'normal' else 'Ein'
+        state: root.tropfen_aktiv
+        on_state: root.pressed_tropfen_aktiv(self)
+    CloseButton:
+        id: tropfen_close
+        pos: root.x + 7, root.y + 75
+        on_press: root.parent.parent.parent.pressed_tropfen_close(root)
+
+#    Switch:
+#        active: root.aktiv
+#        pos: root.x + root.width/2 - 50, root.y + 65
+#        on_active: root.pressed_aktiv(self.active)
+
+<VentilLayout>:
+    id: ventil
+    orientation: 'horizontal'
+    size: 800,124
+    size_hint: None, None
+    spacing: 10
+    padding: [18,7,18,7]
+    canvas.before:
+        Color:
+            rgba: 37/255, 39/255, 54/255, 1
+            #rgba: 255/255, 255/255, 255/255, 1
+            #rgba: 28/255, 37/255, 41/255, 1
+        RoundedRectangle:
+            pos: self.x + 10, self.y + 2
+            size: self.width - 20, self.height - 4
+            radius: [10,]
+    ToggleButton:
+        id: ventil_aktiv
+        size: 90,30
+        size_hint: None, None
+        pos_hint:{"top":0.95}
+        font_size: 20
+        text: root.ventil_name
+        state: root.ventil_aktiv
+        on_state: root.pressed_ventil_aktiv(self)
+    ScrollView:
+        id: ventil_scrollview
+        do_scroll_x: True
+        do_scroll_y: False
+        size_hint: None, None
+        size: 610,124
+        scroll_type: ['content']
+        effect_cls: "DampedScrollEffect"
+        bar_width: 0
+        bar_margin: 0
+        BoxLayout:
+            id: ventil_tropfen_liste
+            orientation: 'horizontal'
+            size_hint: None, None
+            #size_x: sum(x.width for x in self.children)
+            #size_y: 124
+            size: 720,124
+            spacing: 5
+
+
+    BoxLayout:
+        orientation: 'vertical'
+        size: 50, 124
+        size_hint: None, None
+        spacing: 6
+        padding: [2,0,0,10]
+        Button:
+            id: ventil_tropfen_plus
+            size: 40,40
+            size_hint: None, None
+            font_size: 40
+            text: '+'
+            on_press: root.pressed_ventil_plus()
+        ToggleButton:
+            id: ventil_toggle_close
+            size: 40, 40
+            size_hint: None, None
+            font_size: 40
+            state: root.ventil_toggle_close
+            background_normal: 'images/delete_normal.png'
+            background_down: 'images/delete_down.png'
+            on_state: root.pressed_ventil_toggle_close(self)
+
+
+<KameraTimingWidget>:
+    canvas.before:
+        Color:
+            #rgba: 255/255, 255/255, 255/255, 0.7
+            rgba: 32/255, 32/255, 32/255, 1
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+
+    padding: 2
+    size_hint: None, None
+    size: 139, 42
+
+    TimingInput:
+        id: zeit
+        font_size: 24
+        padding: [0, 1, 4, 1]
+        pos: root.x + 37, root.y + 6
+        size: root.width - 74, 30
+        size_hint: None, None
+        halign: 'right'
+        multiline: False
+        hint_text: root.hint
+        hint_text_color: (160/255, 160/255, 160/255, 1)
+        text: root.zeit
+        on_text: root.update(self.text)
+
+    RepeatButton:
+        text:"—"
+        pos:  root.x + 6, root.y + 5
+        size: 30,30
+        on_press: root.pressed_minus(0.1)
+        on_repeat_press: root.pressed_minus(0.1)
+        on_long_repeat_press: root.pressed_minus(1)
+
+    RepeatButton:
+        text:"+"
+        pos: root.x + root.width - 36,  root.y + 5
+        size: 30,30
+        on_press: root.pressed_plus(0.1)
+        on_repeat_press: root.pressed_plus(0.1)
+        on_long_repeat_press: root.pressed_plus(1)
+
+<KameraLayout>:
+    orientation: 'horizontal'
+    size_hint: None, None
+    size: 800,59
+    spacing: 10
+    padding: [18,0,18,0]
+    canvas.before:
+        Color:
+            rgba: 37/255, 39/255, 54/255, 1
+            #rgba: 255/255, 255/255, 255/255, 1
+        RoundedRectangle:
+            pos: self.x + 10, self.y + 4
+            size: self.width - 20, self.height - 6
+            radius: [10,]
+
+    ToggleButton:
+        id: kamera_aktiv
+        size: 90,30
+        size_hint: None, None
+        pos_hint:{"top":0.77}
+        font_size: 20
+        state: root.kamera_aktiv
+        on_state: root.pressed_kamera_aktiv(self)
+        text:"Kamera"
+
+    KameraTimingWidget:
+        id: kamera_ausloeser
+        pos_hint:{"top":0.89}
+        hint: 'Start'
+    BoxLayout:
+        spacing: 5
+        padding: [30,0,0,0]
+        size_hint: None, None
+        size: 300,59
+
+        ToggleButton:
+            id: blitz_1_aktiv
+            size: 90, 30
+            size_hint: None, None
+            pos_hint: {"top": 0.77}
+            font_size: 20
+            state: root.blitz_1_aktiv
+            on_state: root.pressed_blitz_1_aktiv(self)
+            text: "Blitz 1"
+
+        ToggleButton:
+            id: blitz_2_aktiv
+            size: 90, 30
+            size_hint: None, None
+            pos_hint: {"top": 0.77}
+            font_size: 20
+            state: root.blitz_2_aktiv
+            on_state: root.pressed_blitz_2_aktiv(self)
+            text: "Blitz 2"
+
+        ToggleButton:
+            id: blitz_3_aktiv
+            size: 90, 30
+            size_hint: None, None
+            pos_hint: {"top": 0.77}
+            font_size: 20
+            state: root.blitz_3_aktiv
+            on_state: root.pressed_blitz_3_aktiv(self)
+            text: "Blitz 3"
+
+    KameraTimingWidget:
+        id: blitz_delay
+        pos_hint:{"top":0.89}
+        hint: 'Delta'
+
+<FileLoadPopup>:
+    title: "Werte laden"
+    size_hint: .9, .9
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            #filters: ['*.dw']
+            rootpath: './files/'
+        BoxLayout:
+            size_hint: (1, 0.1)
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            spacing: 20
+            Button:
+                text: "Schließen"
+                on_release: root.pressed_close()
+                id: button_close
+            Button:
+                text: "Laden"
+                on_release: root.pressed_load(filechooser.path, filechooser.selection)
+                id: button_load
+                disabled: True if filechooser.selection==[] else False
+
+
+<FileSavePopup>:
+    title: "Werte speichern"
+    size_hint: .9, .9
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            on_selection: root.on_selection(filechooser.path, filechooser.selection)
+            #filters: ['*.dw']
+            rootpath: './files/'
+        TextInput:
+            id: text_input
+            size_hint: 1, .1
+            text: root.text_input
+        BoxLayout:
+            size_hint: (1, .1)
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            spacing: 20
+            Button:
+                text: "Schließen"
+                on_release: root.pressed_close()
+                id: button_close
+            Button:
+                text: "Speichern"
+                on_release: root.pressed_save(filechooser.path, filechooser.selection, text_input)
+                id: button_save
+                #disabled: True if filechooser.selection==[] or text_input.text else False
+
+<DropWise>:
+
+    BoxLayout:
+        orientation: 'vertical'
+        size: 800,480
+        size_hint: None, None
+#        canvas.before:
+#            Color:
+#                rgb: .1, .1, .1
+#            Rectangle:
+#                size: self.size
+#                source: 'images/background.png'
+
+        ActionBar:
+            pos_hint: {'top':1}
+            ActionView:
+                id: actionView
+                ActionPrevious:
+                    title: 'DropWise'
+                    text_size: 2
+                    app_icon: 'images/icon.png'
+                    app_icon_height: 40
+                    app_icon_width: 40
+                    with_previous: False
+                ActionButton:
+                    icon: 'images/load.png'
+                    on_press: root.pressed_load_popup()
+                ActionSeparator:
+                    background_image: 'images/transparent.png'
+                    size: 10, 40
+                ActionButton:
+                    icon: 'images/save.png'
+                    on_press: app.root.pressed_save_popup()
+                ActionSeparator:
+                    background_image: 'images/transparent.png'
+                    size: 40, 40
+                ActionButton:
+                    icon: 'images/start.png'
+                    on_press: app.root.pressed_start()
+                ActionSeparator:
+                    background_image: 'images/transparent.png'
+                    size: 20,40
+
+        VentilLayout:
+            id: ventil_1
+            ventil_name: 'Ventil 1'
+
+        VentilLayout:
+            id: ventil_2
+            ventil_name: 'Ventil 2'
+
+        VentilLayout:
+            id: ventil_3
+            ventil_name: 'Ventil 3'
+
+        KameraLayout:
+            id: kamera
