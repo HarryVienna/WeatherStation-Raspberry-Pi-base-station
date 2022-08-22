@@ -266,13 +266,13 @@ class Hourly:
 @dataclass
 class Minutely:
     dt: datetime
-    precipitation: int
+    precipitation: float
 
     @staticmethod
     def from_dict(obj: Any) -> 'Minutely':
         assert isinstance(obj, dict)
         dt = datetime.fromtimestamp(from_int(obj.get("dt")))
-        precipitation = from_int(obj.get("precipitation"))
+        precipitation = from_float(obj.get("precipitation"))
         return Minutely(dt, precipitation)
 
 

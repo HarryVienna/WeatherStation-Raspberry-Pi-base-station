@@ -21,7 +21,7 @@ class WeatherStation(Widget):
         self.url = url
 
     def update(self, dt):
-        f = open("c:\\Users\\Harald\\NextCloud\\Hardware\\Wetterstation\\Python\\WeatherStation\\test5.json", mode="r", encoding="utf-8")
+        f = open("c:\\Users\\Harald\\NextCloud\\Hardware\\Wetterstation\\Python\\WeatherStation\\test6.json", mode="r", encoding="utf-8")
 
         data = OpenWeatherData.from_dict(json.loads(f.read()))
 
