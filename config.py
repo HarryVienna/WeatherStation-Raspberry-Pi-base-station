@@ -1,7 +1,15 @@
 import yaml
 
-with open("config/config.yaml", "r") as stream:
-    try:
-        config = yaml.safe_load(stream)
-    except yaml.YAMLError as exc:
-        print(exc)
+class Config:
+    def __init__(self, path):
+
+        self.params = {}
+        with open(path, "r") as stream:
+            try:
+                self.params = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+
+    def getparam(self, k):
+        return self.params.get(k)
+

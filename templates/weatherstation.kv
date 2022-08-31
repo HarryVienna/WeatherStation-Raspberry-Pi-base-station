@@ -1,0 +1,59 @@
+#:import TimeLayout time_layout
+#:import CurrentLayout current_layout
+
+<TimeLayout>:
+    orientation: 'horizontal'
+    size: 400,124
+    size_hint: None, None
+    spacing: 10
+    padding: [18,7,18,7]
+    canvas.before:
+        Color:
+            rgba: 37/255, 39/255, 54/255, 1
+
+        RoundedRectangle:
+            pos: self.x + 10, self.y + 2
+            size: self.width - 20, self.height - 4
+            radius: [10,]
+        Line:
+            width: 2
+            rectangle: self.x, self.y, self.width, self.height
+    Label:
+        id: datetime
+        text: root.date_time
+        font_size: 32
+
+
+<CurrentLayout>:
+    id: current
+    orientation: 'horizontal'
+    size: 200,124
+    size_hint: None, None
+    spacing: 10
+    padding: [18,7,18,7]
+    canvas.before:
+        Color:
+            rgba: 37/255, 39/255, 54/255, 1
+        RoundedRectangle:
+            pos: self.x + 10, self.y + 2
+            size: self.width - 20, self.height - 4
+            radius: [10,]
+    Label:
+        id: temp
+        text: root.temp + '°C'
+        bold: True
+        font_size: 48
+        font_name: 'fonts/7SEGMENTALDIGITALDISPLAY'
+
+
+<WeatherStation>:
+    BoxLayout:
+        orientation: 'vertical'
+        size: 800,480
+        size_hint: None, None
+
+        TimeLayout:
+            id:time_widget
+        CurrentLayout:
+            id: current_widget
+

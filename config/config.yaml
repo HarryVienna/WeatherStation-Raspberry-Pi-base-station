@@ -1,2 +1,10 @@
-my_foo: foo
-my_bar: bar
+openweather:
+  url: https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&units={units}&lang={lang}&appid={apikey}
+  lat: 48.214110
+  lon: 16.323219
+  units: = metric
+  lang: de
+  apikey: abdb6964a969eeceed4f072180f1d3a7
+
+kivy:
+  kv_directory: templates

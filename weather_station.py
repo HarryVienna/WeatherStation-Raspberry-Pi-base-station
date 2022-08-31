@@ -1,30 +1,24 @@
-
+import datetime
 import json
-import logging
-import time
-import traceback
-from collections import defaultdict
-from datetime import datetime
-from RPi import GPIO
-from kivy.app import App
-from kivy.core.window import Window
-from kivy.properties import ObjectProperty
-from kivy.uix.widget import Widget
-from kivy.clock import Clock
-from open_weather_data import OpenWeatherData
-from config import config
+import locale
 
-from datetime import datetime
+from kivy.uix.widget import Widget
+
+from open_weather_data import OpenWeatherData
+
 
 class WeatherStation(Widget):
-    def __init__(self, url):
-        super().__init__()
-        self.url = url
 
-    def update(self, dt):
+    def update_weather(self, dt):
         f = open("tests/json/test6.json", mode="r", encoding="utf-8")
 
         data = OpenWeatherData.from_dict(json.loads(f.read()))
 
-        print(data);
+        self.ids.current_widget.temp =  f"{data.current.temp:.1f}"
+
+    def update_time(self, dt):
+
+        today = datetime.datetime.today()
+        self.ids.time_widget.date_time = f"{today:%x  %X}"
+
 

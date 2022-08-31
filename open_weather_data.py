@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Any, Optional, TypeVar, Callable, Type, cast
+from typing import List, Any, Optional, TypeVar, Callable
 
 
 T = TypeVar("T")
@@ -40,7 +40,6 @@ def from_union(fs, x):
     assert False
 
 
-
 @dataclass
 class Alert:
     sender_name: str
@@ -64,7 +63,7 @@ class Alert:
 
 @dataclass
 class Weather:
-    id: int
+    condition: int
     main: str
     description: str
     icon: str
@@ -72,11 +71,12 @@ class Weather:
     @staticmethod
     def from_dict(obj: Any) -> 'Weather':
         assert isinstance(obj, dict)
-        id = from_int(obj.get("id"))
+        condition = from_int(obj.get("id"))
         main = from_str(obj.get("main"))
         description = from_str(obj.get("description"))
         icon = from_str(obj.get("icon"))
-        return Weather(id, main, description, icon)
+        return Weather(condition, main, description, icon)
+
 
 @dataclass
 class Rain:
@@ -88,6 +88,7 @@ class Rain:
         one_hour = from_union([from_float, from_none], obj.get("1h"))
         return Rain(one_hour)
 
+
 @dataclass
 class Snow:
     one_hour: Optional[float] = None
@@ -97,6 +98,7 @@ class Snow:
         assert isinstance(obj, dict)
         one_hour = from_union([from_float, from_none], obj.get("1h"))
         return Snow(one_hour)
+
 
 @dataclass
 class Current:
@@ -138,7 +140,8 @@ class Current:
         wind_gust = from_union([from_float, from_none], obj.get("wind_gust"))
         rain = from_union([Rain.from_dict, from_none], obj.get("rain"))
         snow = from_union([Snow.from_dict, from_none], obj.get("snow"))
-        return Current(dt, sunrise, sunset, temp, feels_like, pressure, humidity, dew_point, clouds, uvi, visibility, wind_speed, wind_deg, weather, wind_gust, rain, snow)
+        return Current(dt, sunrise, sunset, temp, feels_like, pressure, humidity, dew_point, clouds, uvi,
+                       visibility, wind_speed, wind_deg, weather, wind_gust, rain, snow)
 
 
 @dataclass
@@ -161,8 +164,8 @@ class FeelsLike:
 @dataclass
 class Temp:
     day: float
-    min: float
-    max: float
+    minimum: float
+    maximum: float
     night: float
     eve: float
     morn: float
@@ -171,12 +174,12 @@ class Temp:
     def from_dict(obj: Any) -> 'Temp':
         assert isinstance(obj, dict)
         day = from_float(obj.get("day"))
-        min = from_float(obj.get("min"))
-        max = from_float(obj.get("max"))
+        minimum = from_float(obj.get("min"))
+        maximum = from_float(obj.get("max"))
         night = from_float(obj.get("night"))
         eve = from_float(obj.get("eve"))
         morn = from_float(obj.get("morn"))
-        return Temp(day, min, max, night, eve, morn)
+        return Temp(day, minimum, maximum, night, eve, morn)
 
 
 @dataclass
@@ -225,7 +228,9 @@ class Daily:
         weather = from_list(Weather.from_dict, obj.get("weather"))
         rain = from_union([from_float, from_none], obj.get("rain"))
         snow = from_union([from_float, from_none], obj.get("snow"))
-        return Daily(dt, sunrise, sunset, moonrise, moonset, moon_phase, temp, feels_like, pressure, humidity, dew_point, wind_speed, wind_gust, wind_deg, clouds, pop, uvi, weather, rain, snow)
+        return Daily(dt, sunrise, sunset, moonrise, moonset, moon_phase, temp, feels_like, pressure,
+                     humidity, dew_point, wind_speed, wind_gust, wind_deg, clouds, pop, uvi, weather, rain, snow)
+
 
 @dataclass
 class Hourly:
@@ -257,11 +262,13 @@ class Hourly:
         clouds = from_int(obj.get("clouds"))
         visibility = from_int(obj.get("visibility"))
         wind_speed = from_float(obj.get("wind_speed"))
-        wind_deg = from_int(obj.get("wind_deg"))
         wind_gust = from_float(obj.get("wind_gust"))
+        wind_deg = from_int(obj.get("wind_deg"))
         pop = from_float(obj.get("pop"))
         weather = from_list(Weather.from_dict, obj.get("weather"))
-        return Hourly(dt, temp, feels_like, pressure, humidity, dew_point, uvi, clouds, visibility, wind_speed, wind_deg, wind_gust, pop, weather)
+        return Hourly(dt, temp, feels_like, pressure, humidity, dew_point, uvi, clouds,
+                      visibility, wind_speed, wind_gust, wind_deg, pop, weather)
+
 
 @dataclass
 class Minutely:
@@ -299,6 +306,5 @@ class OpenWeatherData:
         minutely = from_list(Minutely.from_dict, obj.get("minutely"))
         hourly = from_list(Hourly.from_dict, obj.get("hourly"))
         daily = from_list(Daily.from_dict, obj.get("daily"))
-        alerts = alerts = from_union([lambda x: from_list(Alert.from_dict, x), from_none], obj.get("alerts"))
+        alerts = from_union([lambda x: from_list(Alert.from_dict, x), from_none], obj.get("alerts"))
         return OpenWeatherData(lat, lon, timezone, timezone_offset, current, minutely, hourly, daily, alerts)
-
