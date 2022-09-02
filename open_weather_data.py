@@ -101,6 +101,44 @@ class Snow:
 
 
 @dataclass
+class Temp:
+    day: float
+    minimum: float
+    maximum: float
+    night: float
+    eve: float
+    morn: float
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'Temp':
+        assert isinstance(obj, dict)
+        day = from_float(obj.get("day"))
+        minimum = from_float(obj.get("min"))
+        maximum = from_float(obj.get("max"))
+        night = from_float(obj.get("night"))
+        eve = from_float(obj.get("eve"))
+        morn = from_float(obj.get("morn"))
+        return Temp(day, minimum, maximum, night, eve, morn)
+
+
+@dataclass
+class FeelsLike:
+    day: float
+    night: float
+    eve: float
+    morn: float
+
+    @staticmethod
+    def from_dict(obj: Any) -> 'FeelsLike':
+        assert isinstance(obj, dict)
+        day = from_float(obj.get("day"))
+        night = from_float(obj.get("night"))
+        eve = from_float(obj.get("eve"))
+        morn = from_float(obj.get("morn"))
+        return FeelsLike(day, night, eve, morn)
+
+
+@dataclass
 class Current:
     dt: datetime
     sunrise: datetime
@@ -145,41 +183,58 @@ class Current:
 
 
 @dataclass
-class FeelsLike:
-    day: float
-    night: float
-    eve: float
-    morn: float
+class Minutely:
+    dt: datetime
+    precipitation: float
 
     @staticmethod
-    def from_dict(obj: Any) -> 'FeelsLike':
+    def from_dict(obj: Any) -> 'Minutely':
         assert isinstance(obj, dict)
-        day = from_float(obj.get("day"))
-        night = from_float(obj.get("night"))
-        eve = from_float(obj.get("eve"))
-        morn = from_float(obj.get("morn"))
-        return FeelsLike(day, night, eve, morn)
+        dt = datetime.fromtimestamp(from_int(obj.get("dt")))
+        precipitation = from_float(obj.get("precipitation"))
+        return Minutely(dt, precipitation)
 
 
 @dataclass
-class Temp:
-    day: float
-    minimum: float
-    maximum: float
-    night: float
-    eve: float
-    morn: float
+class Hourly:
+    dt: datetime
+    temp: float
+    feels_like: float
+    pressure: int
+    humidity: int
+    dew_point: float
+    uvi: float
+    clouds: int
+    visibility: int
+    wind_speed: float
+    wind_gust: float
+    wind_deg: int
+    pop: float
+    weather: List[Weather]
+    rain: Optional[Rain] = None
+    snow: Optional[Snow] = None
 
     @staticmethod
-    def from_dict(obj: Any) -> 'Temp':
+    def from_dict(obj: Any) -> 'Hourly':
         assert isinstance(obj, dict)
-        day = from_float(obj.get("day"))
-        minimum = from_float(obj.get("min"))
-        maximum = from_float(obj.get("max"))
-        night = from_float(obj.get("night"))
-        eve = from_float(obj.get("eve"))
-        morn = from_float(obj.get("morn"))
-        return Temp(day, minimum, maximum, night, eve, morn)
+        dt = datetime.fromtimestamp(from_int(obj.get("dt")))
+        temp = from_float(obj.get("temp"))
+        feels_like = from_float(obj.get("feels_like"))
+        pressure = from_int(obj.get("pressure"))
+        humidity = from_int(obj.get("humidity"))
+        dew_point = from_float(obj.get("dew_point"))
+        uvi = from_float(obj.get("uvi"))
+        clouds = from_int(obj.get("clouds"))
+        visibility = from_int(obj.get("visibility"))
+        wind_speed = from_float(obj.get("wind_speed"))
+        wind_gust = from_float(obj.get("wind_gust"))
+        wind_deg = from_int(obj.get("wind_deg"))
+        pop = from_float(obj.get("pop"))
+        weather = from_list(Weather.from_dict, obj.get("weather"))
+        rain = from_union([Rain.from_dict, from_none], obj.get("rain"))
+        snow = from_union([Snow.from_dict, from_none], obj.get("snow"))
+        return Hourly(dt, temp, feels_like, pressure, humidity, dew_point, uvi, clouds,
+                      visibility, wind_speed, wind_gust, wind_deg, pop, weather, rain, snow)
 
 
 @dataclass
@@ -231,56 +286,6 @@ class Daily:
         return Daily(dt, sunrise, sunset, moonrise, moonset, moon_phase, temp, feels_like, pressure,
                      humidity, dew_point, wind_speed, wind_gust, wind_deg, clouds, pop, uvi, weather, rain, snow)
 
-
-@dataclass
-class Hourly:
-    dt: datetime
-    temp: float
-    feels_like: float
-    pressure: int
-    humidity: int
-    dew_point: float
-    uvi: float
-    clouds: int
-    visibility: int
-    wind_speed: float
-    wind_gust: float
-    wind_deg: int
-    pop: float
-    weather: List[Weather]
-
-    @staticmethod
-    def from_dict(obj: Any) -> 'Hourly':
-        assert isinstance(obj, dict)
-        dt = datetime.fromtimestamp(from_int(obj.get("dt")))
-        temp = from_float(obj.get("temp"))
-        feels_like = from_float(obj.get("feels_like"))
-        pressure = from_int(obj.get("pressure"))
-        humidity = from_int(obj.get("humidity"))
-        dew_point = from_float(obj.get("dew_point"))
-        uvi = from_float(obj.get("uvi"))
-        clouds = from_int(obj.get("clouds"))
-        visibility = from_int(obj.get("visibility"))
-        wind_speed = from_float(obj.get("wind_speed"))
-        wind_gust = from_float(obj.get("wind_gust"))
-        wind_deg = from_int(obj.get("wind_deg"))
-        pop = from_float(obj.get("pop"))
-        weather = from_list(Weather.from_dict, obj.get("weather"))
-        return Hourly(dt, temp, feels_like, pressure, humidity, dew_point, uvi, clouds,
-                      visibility, wind_speed, wind_gust, wind_deg, pop, weather)
-
-
-@dataclass
-class Minutely:
-    dt: datetime
-    precipitation: float
-
-    @staticmethod
-    def from_dict(obj: Any) -> 'Minutely':
-        assert isinstance(obj, dict)
-        dt = datetime.fromtimestamp(from_int(obj.get("dt")))
-        precipitation = from_float(obj.get("precipitation"))
-        return Minutely(dt, precipitation)
 
 
 @dataclass

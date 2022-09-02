@@ -3,6 +3,8 @@ from kivy.uix.boxlayout import BoxLayout
 
 
 class TimeLayout(BoxLayout):
-    date_time = StringProperty("xx")
+    day = StringProperty("xx")
+    date = StringProperty("xx")
+    time = StringProperty("xx")
 
 

@@ -10,7 +10,7 @@ from open_weather_data import OpenWeatherData
 class WeatherStation(Widget):
 
     def update_weather(self, dt):
-        f = open("tests/json/test6.json", mode="r", encoding="utf-8")
+        f = open("tests/json/test7.json", mode="r", encoding="utf-8")
 
         data = OpenWeatherData.from_dict(json.loads(f.read()))
 
@@ -19,6 +19,8 @@ class WeatherStation(Widget):
     def update_time(self, dt):
 
         today = datetime.datetime.today()
-        self.ids.time_widget.date_time = f"{today:%x  %X}"
+        self.ids.time_widget.day = f"{today:%a}"
+        self.ids.time_widget.date = f"{today:%x}"
+        self.ids.time_widget.time = f"{today:%X}"
 
 
