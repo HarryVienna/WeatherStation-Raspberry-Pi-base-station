@@ -1,16 +1,14 @@
 #:import TimeLayout time_layout
-#:import CurrentLayout current_layout
+#:import CurrentWidget current_widget
+#:import ForecastHourlyWidget forecast_hourly_widget
+#:import ForecastDailyWidget forecast_daily_widget
+#:import utils kivy.utils
 
 <TimeLayout>:
     orientation: 'horizontal'
-    size: 600,32
+    size: 790,32
     size_hint: None, None
-    canvas.before:
-        Color:
-            rgba: 64/255, 64/255, 64/255, 1
-        Rectangle:
-            pos: self.pos
-            size: self.size
+
     Label:
         size: 10,10
         size_hint: None, None
@@ -18,6 +16,7 @@
         text: root.day
         font_size: 12
     Label:
+        color: 0,0,0,1
         id: datetime
         text: root.date
         font_size: 24
@@ -27,34 +26,193 @@
         font_size: 24
 
 
-<CurrentLayout>:
-    id: current
+<CurrentWidget>:
     orientation: 'horizontal'
-    size: 200,124
-    size_hint: None, None
-    spacing: 10
-    padding: [18,7,18,7]
     canvas.before:
         Color:
-            rgba: 255/255, 255/255, 255/255, 1
-        Line:
-            rounded_rectangle: self.x + 1, self.y + 1, self.width, self.height, 10
-            width: 2
+            rgba: utils.get_color_from_hex("#FFFFFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+    AnchorLayout:
+        size_hint: 0.35, 1
+        anchor_x: 'center'
+        anchor_y: 'center'
 
-    Label:
-        id: temp
-        text: '15.7' + ' °C'
-        font_size: 48
+        Image:
+            id:weather
+            source: 'icons/weather/sun.png'
+            size_hint: 1,1
+    BoxLayout: # rechte Seite neben Icon
+        size_hint: 0.65, 1
+        padding: [0,8,4,4]
+        orientation: 'vertical'
+        BoxLayout: # 1. Zeile auf der rechten Seite
+            size_hint: 1, 0.4
+            orientation: 'horizontal'
+            Label:
+                id: temperature
+                size_hint: 0.7, 1
+                color: utils.get_color_from_hex("#2E2E2E")
+                text: root.temperature
+                text_size: self.size
+                font_size: 42
+                halign: 'center'
+                valign: 'middle'
+            BoxLayout: # Zeilen mit max und min Werten
+                size_hint: 0.3, 1
+                orientation: 'vertical'
+                padding: [0, 0, 4, 0]
+                Label:
+                    id: max_temperature
+                    color: utils.get_color_from_hex("#F40000")
+                    text: root.max_temperature
 
+                    text_size: self.size
+                    font_size: 18
+                    halign: 'right'
+                    valign: 'middle'
+                Label:
+                    id: min_temperature
+                    color: utils.get_color_from_hex("#0000F4")
+                    text: root.min_temperature
+                    text_size: self.size
+                    font_size: 18
+                    halign: 'right'
+                    valign: 'middle'
+
+        BoxLayout: # 2. Zeile auf der rechten Seite
+            size_hint: 1, 0.3
+            orientation: 'horizontal'
+
+            Image:
+                size_hint: 0.10, 1
+                source: 'icons/pressure.png'
+                halign: 'left'
+                valign: 'middle'
+            Label:
+                id: pressure
+                size_hint: 0.50, 1
+                padding: [4,0]
+                color: utils.get_color_from_hex("#2E2E2E")
+                halign: 'left'
+                valign: 'middle'
+                text: root.pressure
+                text_size: self.size
+                font_size: 22
+
+            Image:
+                size_hint: 0.1, 1
+                source: 'icons/humidity.png'
+                halign: 'left'
+                valign: 'middle'
+            Label:
+                id: humidity
+                size_hint: 0.3, 1
+                padding: [4,0]
+                color: utils.get_color_from_hex("#2E2E2E")
+                halign: 'left'
+                valign: 'middle'
+                text: root.humidity
+                text_size: self.size
+                font_size: 22
+
+        BoxLayout: # 3. Zeile auf der rechten Seite
+            size_hint: 1, 0.3
+            orientation: 'horizontal'
+
+            Image:
+                canvas.before:
+                    PushMatrix
+                    Rotate:
+                        angle: root.wind_deg
+                        origin: self.center
+                canvas.after:
+                    PopMatrix
+                source: 'icons/wind.png'
+                halign: 'left'
+                valign: 'middle'
+                size_hint: 0.1, 1
+            Label:
+                id: wind
+                size_hint: 0.5, 1
+                padding: [4,0]
+                color: utils.get_color_from_hex("#2E2E2E")
+                halign: 'left'
+                valign: 'middle'
+                text: root.wind
+                text_size: self.size
+                font_size: 22
+
+            Image:
+                source: 'icons/cloud.png'
+                halign: 'left'
+                valign: 'middle'
+                size_hint: 0.1, 1
+            Label:
+                id: clouds
+                size_hint: 0.3, 1
+                padding: [4,0]
+                color: utils.get_color_from_hex("#2E2E2E")
+                halign: 'left'
+                valign: 'middle'
+                text: root.clouds
+                text_size: self.size
+                font_size: 22
+
+<ForecastHourlyWidget>:
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#FFFFFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+
+<ForecastDailyWidget>:
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#FFFFFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
 
 <WeatherStation>:
     BoxLayout:
+        canvas.before:
+            Color:
+                rgb: utils.get_color_from_hex("#96C6F5")
+            Rectangle:
+                pos: self.x, self.y
+                size: self.width, self.height
         orientation: 'vertical'
         size: 800,480
         size_hint: None, None
-        spacing: 10
+        spacing: 5
+        padding: 5
         TimeLayout:
             id:time_widget
-        CurrentLayout:
-            id: current_widget
-
+        BoxLayout:
+            spacing: 5
+            size: 800,128
+            size_hint: None, None
+            orientation: 'horizontal'
+            CurrentWidget:
+                id: current_widget
+                size: 350,130
+                size_hint: None, None
+        BoxLayout:
+            spacing: 5
+            size: 800,300
+            size_hint: None, None
+            orientation: 'horizontal'
+            ForecastHourlyWidget:
+                id: forecast_hourly_widget
+                size: 393, 300
+                size_hint: None, None
+            ForecastDailyWidget:
+                id: forecast_daily_widget
+                size: 393, 300
+                size_hint: None, None

@@ -1,0 +1,488 @@
+#:import TimeLayout time_layout
+#:import CurrentLayout current_layout
+#:import ForecastLayout forecast_layout
+#:import ForecastHourlyWidget forecast_hourly_widget
+#:import ForecastDailyWidget forecast_daily_widget
+#:import TestLayout test_layout
+#:import utils kivy.utils
+
+<TimeLayout>:
+    orientation: 'horizontal'
+    size: 800,30
+    size_hint: None, None
+    canvas.before:
+        Color:
+            rgb: utils.get_color_from_hex("#0078BB")
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        size: 10,10
+        size_hint: None, None
+        id: datetime
+        text: root.day
+        font_size: 12
+    Label:
+        id: datetime
+        text: root.date
+        font_size: 24
+    Label:
+        id: datetime
+        text: root.time
+        font_size: 24
+
+
+<CurrentLayout>:
+    id: current
+    orientation: 'horizontal'
+    spacing: 0
+    padding: 0
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#FFFBFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+    Image:
+        id:sun
+        source: 'icons/weather/sun.png'
+        size_hint: None,None
+        size: 128,128
+    Label:
+        id: temp
+        color: 0,0,0,1
+        text: '15.7' + ' °C'
+        font_size: 48
+
+<ForecastHourlyWidget>:
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#FFFFFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+
+<ForecastDailyWidget>:
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#FFFFFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
+
+<TestLayout>:
+    size: 800, 150
+    size_hint: None, None
+    BoxLayout:
+        canvas.before:
+        orientation: 'horizontal'
+
+
+        spacing: 5
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgba: 6/255, 118/255, 174/255, 1
+                RoundedRectangle:
+                    pos: self.x, self.y
+                    size: self.width, self.height
+                    radius: [10,]
+            orientation: 'vertical'
+
+
+            BoxLayout:
+
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 44
+                Label:
+                    halign: 'center'
+                    valign: 'middle'
+                    font_size: 22
+                    text_size: self.size
+                    text: "So"
+                    bold: False
+
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint_y: None
+                    height: 44
+                    Image:
+                        id:sun
+                        source: 'icons/weather/sun.png'
+                        size_hint: None,None
+                        size: 40,40
+
+            BoxLayout:
+
+                orientation: 'horizontal'
+
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 32, humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/humidity.png'
+                        size_hint: None,None
+                        size: 16,16
+
+                Label:
+                    id: temperature
+                    text_size: self.size
+                    halign: 'right'
+                    valign: 'middle'
+                    font_size: 16
+                    text: "14/17 °C"
+                    padding:[5,0]
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 32, humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/humidity.png'
+                        size_hint: None,None
+                        size: 16,16
+
+                Label:
+                    id: humidity
+                    text_size: self.size
+                    halign: 'right'
+                    valign: 'middle'
+                    font_size: 16
+                    text: "52 %"
+                    padding:[5,0]
+
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                AnchorLayout:
+                    anchor_x: 'right'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 24, humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/pressure.png'
+                        size_hint: None,None
+                        size: 16,16
+
+                Label:
+                    id: humidity
+                    text_size: self.size
+                    halign: 'right'
+                    valign: 'middle'
+                    font_size: 16
+                    text: "1012 hPa"
+                    padding:[5,0]
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                AnchorLayout:
+                    anchor_x: 'right'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 24, humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/pressure.png'
+                        size_hint: None,None
+                        size: 16,16
+
+                Label:
+                    id: humidity
+                    text_size: self.size
+                    halign: 'right'
+                    valign: 'middle'
+                    font_size: 16
+                    text: "90 %"
+                    padding:[5,0]
+
+            BoxLayout:
+                orientation: 'horizontal'
+
+                AnchorLayout:
+                    anchor_x: 'right'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 24, humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/pressure.png'
+                        size_hint: None,None
+                        size: 16,16
+
+                Label:
+                    id: humidity
+                    text_size: self.size
+                    halign: 'right'
+                    valign: 'middle'
+                    font_size: 16
+                    text: "19.1 mm"
+                    padding:[5,0]
+
+
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgba: 6/255, 118/255, 174/255, 1
+                RoundedRectangle:
+                    pos: self.x, self.y
+                    size: self.width, self.height
+                    radius: [10,]
+            orientation: 'vertical'
+            size_hint: 1,1
+
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 3/255, 98/255, 139/255, 1
+                    RoundedRectangle:
+                        pos: self.x, self.y
+                        size: self.width, self.height
+                        radius: [10,]
+                font_size: 18
+                text: "So"
+                bold: True
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                size_hint_y: None
+                height: 40
+                Image:
+                    id:sun
+                    source: 'icons/weather/sun.png'
+                    size_hint: None,None
+                    size: 40,40
+            Label:
+                font_size: 20
+                text: "11/17 °C"
+
+            BoxLayout:
+                orientation: 'horizontal'
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 32,humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/humidity.png'
+                        size_hint: None,None
+                        size: 14,14
+
+                Label:
+                    id: humidity
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle'
+                    font_size: 14
+                    text: "54 %"
+            BoxLayout:
+                orientation: 'horizontal'
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 32,pressure.height
+
+                    Image:
+                        id:icon_pressure
+                        source: 'icons/pressure.png'
+                        size_hint: None,None
+                        size: 14,14
+
+                Label:
+                    id: pressure
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle'
+                    font_size: 14
+                    text: "1012 hPa"
+            BoxLayout:
+                orientation: 'horizontal'
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: 32,pressure.height
+
+                    Image:
+                        id:icon_pressure
+                        source: 'icons/pressure.png'
+                        size_hint: None,None
+                        size: 14,14
+
+                Label:
+                    id: pressure
+                    text_size: self.size
+                    halign: 'left'
+                    valign: 'middle'
+                    font_size: 14
+                    text: "1012 hPa"
+
+
+
+        BoxLayout:
+            canvas.before:
+                Color:
+                    rgba: 6/255, 118/255, 174/255, 1
+                RoundedRectangle:
+                    pos: self.x, self.y
+                    size: self.width, self.height
+                    radius: [10,]
+            orientation: 'vertical'
+            size_hint: 1,1
+
+            spacing: 0
+            padding: 0
+            Label:
+                canvas.before:
+                    Color:
+                        rgba: 3/255, 98/255, 139/255, 1
+                    RoundedRectangle:
+                        pos: self.x, self.y
+                        size: self.width, self.height
+                        radius: [10,]
+                font_size: 20
+                text: "Mo"
+                bold: True
+            AnchorLayout:
+                anchor_x: 'center'
+                anchor_y: 'center'
+                size_hint_y: None
+                height: sun.height
+                Image:
+                    id:sun
+                    source: 'icons/weather/sun.png'
+                    size_hint: None,None
+                    size: 32,32
+            Label:
+                font_size: 20
+                text: "11/17 °C"
+            BoxLayout:
+
+                padding:6
+                orientation: 'horizontal'
+                AnchorLayout:
+                    anchor_x: 'center'
+                    anchor_y: 'center'
+                    size_hint: None, None
+                    size: icon_humidity.width, icon_humidity.height
+
+                    Image:
+                        id:icon_humidity
+                        source: 'icons/humidity.png'
+                        size_hint: None,None
+                        size: 16,16
+                Label:
+                    canvas.before:
+                        Color:
+                            rgba: 3/255, 98/255, 139/255, 1
+                        Rectangle:
+                            pos: self.x, self.y
+                            size: self.width, self.height
+                    font_size: 16
+                    text: "54 %"
+            Label:
+                font_size: 16
+                text: "1015 hPa"
+
+
+
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1,1
+            Label:
+                text: "28"
+            Label:
+                text: "222"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1,1
+            Label:
+                text: "28"
+            Label:
+                text: "222"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1,1
+            Label:
+                text: "28"
+            Label:
+                text: "222"
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint: 1,1
+            Label:
+                text: "28"
+            Label:
+                text: "222"
+
+<WeatherStation>:
+    BoxLayout:
+        canvas.before:
+            Color:
+                rgb: utils.get_color_from_hex("#96C6F5")
+            Rectangle:
+                pos: self.x, self.y
+                size: self.width, self.height
+        orientation: 'vertical'
+        size: 800,480
+        size_hint: None, None
+        spacing: 5
+        padding: 5
+        TimeLayout:
+            id:time_widget
+        BoxLayout:
+            spacing: 5
+            size: 800,130
+            size_hint: None, None
+            orientation: 'horizontal'
+            CurrentLayout:
+                id: current_widget
+                size: 300,130
+                size_hint: None, None
+            TestLayout:
+                id: current_widget
+                size: 300,130
+                size_hint: None, None
+        BoxLayout:
+            spacing: 5
+            size: 800,300
+            size_hint: None, None
+            orientation: 'horizontal'
+            ForecastHourlyWidget:
+                id: forecast_hourly_widget
+                size: 393, 300
+                size_hint: None, None
+            ForecastDailyWidget:
+                id: forecast_daily_widget
+                size: 393, 300
+                size_hint: None, None
+        #BoxLayout:
+        #    id: test
+
+        #    size: 400, 200
+        #    size_hint: None, None

@@ -1,5 +1,7 @@
+import sys
 from dataclasses import dataclass
 from datetime import datetime
+from math import floor, ceil
 from typing import List, Any, Optional, TypeVar, Callable
 
 
@@ -313,3 +315,33 @@ class OpenWeatherData:
         daily = from_list(Daily.from_dict, obj.get("daily"))
         alerts = from_union([lambda x: from_list(Alert.from_dict, x), from_none], obj.get("alerts"))
         return OpenWeatherData(lat, lon, timezone, timezone_offset, current, minutely, hourly, daily, alerts)
+
+    def get_hourly_temp_min_max(self):
+        min_value = sys.maxsize
+        max_value = -sys.maxsize - 1
+        for day in self.hourly:
+            if day.temp > max_value:
+                max_value = day.temp
+            if day.temp < min_value:
+                min_value = day.temp
+
+        min_value_5 = 5 * floor(min_value / 5) # next upper 5 value
+        max_value_5 = 5 * ceil(max_value / 5)  # next lower 5 value
+
+        return min_value, min_value_5, max_value, max_value_5
+
+    def get_daily_temp_min_max(self):
+        min_value = sys.maxsize
+        max_value = -sys.maxsize - 1
+        for day in self.daily:
+            if day.temp.maximum > max_value:
+                max_value = day.temp.maximum
+            if day.temp.minimum < min_value:
+                min_value = day.temp.minimum
+
+        min_value_5 = 5 * floor(min_value / 5) # next upper 5 value
+        max_value_5 = 5 * ceil(max_value / 5)  # next lower 5 value
+
+        return min_value, min_value_5, max_value, max_value_5
+
+

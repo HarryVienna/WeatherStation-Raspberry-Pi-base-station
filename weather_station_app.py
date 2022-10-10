@@ -1,8 +1,11 @@
 import locale
 
+
 from kivy.app import App
 from kivy.clock import Clock
+
 from kivy.core.window import Window
+
 
 from open_weather_api import OpenWeatherApi
 from config import Config
@@ -15,6 +18,7 @@ class WeatherStationApp(App):
 
     def __init__(self):
         super().__init__()
+
 
         self.kv_directory = WeatherStationApp.cfg.params["kivy"]['kv_directory']
 
@@ -29,7 +33,7 @@ class WeatherStationApp(App):
         weather_station = WeatherStation()
         #weather_station = OpenWeatherApi(self.cfg.getparam("openweather").get("url"))
 
-        Clock.schedule_interval(weather_station.update_weather, 10.0)
+        Clock.schedule_interval(weather_station.update_weather, 1.0)
         Clock.schedule_interval(weather_station.update_time, 1.0)
         return weather_station
 
