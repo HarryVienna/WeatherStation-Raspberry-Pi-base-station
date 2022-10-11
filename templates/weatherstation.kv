@@ -1,29 +1,25 @@
-#:import TimeLayout time_layout
+#:import TimeWidget time_widget
 #:import CurrentWidget current_widget
 #:import ForecastHourlyWidget forecast_hourly_widget
 #:import ForecastDailyWidget forecast_daily_widget
 #:import utils kivy.utils
 
-<TimeLayout>:
-    orientation: 'horizontal'
-    size: 790,32
-    size_hint: None, None
+<TimeWidget>:
 
-    Label:
-        size: 10,10
-        size_hint: None, None
-        id: datetime
-        text: root.day
-        font_size: 12
-    Label:
-        color: 0,0,0,1
-        id: datetime
-        text: root.date
-        font_size: 24
-    Label:
-        id: datetime
-        text: root.time
-        font_size: 24
+    BoxLayout:
+        size_hint: 0.5, 1
+        Label:
+            color: utils.get_color_from_hex("#2E2E2E")
+            id: datetime
+            text: root.date
+            font_size: 24
+    BoxLayout:
+        size_hint: 0.5, 1
+        Label:
+            color: 0,0,0,1
+            id: datetime
+            text: root.date
+            font_size: 24
 
 
 <CurrentWidget>:
@@ -39,14 +35,15 @@
         size_hint: 0.35, 1
         anchor_x: 'center'
         anchor_y: 'center'
-
+        padding: 10
         Image:
             id:weather
-            source: 'icons/weather/sun.png'
+            source: 'icons/weather/02d@4x.png'
             size_hint: 1,1
     BoxLayout: # rechte Seite neben Icon
         size_hint: 0.65, 1
         padding: [0,8,4,4]
+        spacing: 10
         orientation: 'vertical'
         BoxLayout: # 1. Zeile auf der rechten Seite
             size_hint: 1, 0.4
@@ -94,7 +91,7 @@
             Label:
                 id: pressure
                 size_hint: 0.50, 1
-                padding: [4,0]
+                padding: [5,0]
                 color: utils.get_color_from_hex("#2E2E2E")
                 halign: 'left'
                 valign: 'middle'
@@ -110,7 +107,7 @@
             Label:
                 id: humidity
                 size_hint: 0.3, 1
-                padding: [4,0]
+                padding: [5,0]
                 color: utils.get_color_from_hex("#2E2E2E")
                 halign: 'left'
                 valign: 'middle'
@@ -137,7 +134,7 @@
             Label:
                 id: wind
                 size_hint: 0.5, 1
-                padding: [4,0]
+                padding: [5,0]
                 color: utils.get_color_from_hex("#2E2E2E")
                 halign: 'left'
                 valign: 'middle'
@@ -153,7 +150,7 @@
             Label:
                 id: clouds
                 size_hint: 0.3, 1
-                padding: [4,0]
+                padding: [5,0]
                 color: utils.get_color_from_hex("#2E2E2E")
                 halign: 'left'
                 valign: 'middle'
@@ -192,8 +189,11 @@
         size_hint: None, None
         spacing: 5
         padding: 5
-        TimeLayout:
+        TimeWidget:
             id:time_widget
+            orientation: 'horizontal'
+            height: 32
+            size_hint: 1, None
         BoxLayout:
             spacing: 5
             size: 800,128

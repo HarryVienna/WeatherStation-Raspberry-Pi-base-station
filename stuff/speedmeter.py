@@ -32,7 +32,7 @@ _redraw_label = tuple(
     'label_icon label_icon_scale label_font_size'.split())
 _redraw_needle = tuple('needle_color'.split())
 
-_image_dir = os.path.join(os.path.dirname(__file__), '../images')
+_image_dir = os.path.join(os.path.dirname(__file__), 'images')
 
 from kivy.graphics.instructions import *
 
