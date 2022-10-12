@@ -28,7 +28,6 @@ class ForecastHourlyWidget(Widget):
     #     self.redraw()
 
     def on_weather_data(self, instance, value):
-        print("on_weather_data")
         self.redraw()
 
     def redraw(self):
@@ -40,15 +39,16 @@ class ForecastHourlyWidget(Widget):
                 PushMatrix()
                 Translate(self.x + self.offset_x_left, self.y + self.offset_y_bottom)
 
+            self.redraw_legend()
             self.redraw_rain()
             self.redraw_temperatures()
 
             with self.canvas:
                 PopMatrix()
 
-    def redraw_rain(self):
+    def redraw_legend(self):
         with self.canvas:
-
+            # Rain ticks
             Color(*get_color_from_hex('#000000'))
             for tick in (0, 1, 2, 3, 4, 5):
                 label = Label(text=f'{tick} l', font_size=14)
@@ -58,25 +58,9 @@ class ForecastHourlyWidget(Widget):
                           pos=(self._get_chart_width() + 5, self._rain_to_pixel(tick, 0, 5) - 8),
                           texture=text)
 
-            pix_day = self._get_chart_width() / 48
-            day_pos = 0
-            # for daily in self.weather_data.hourly[1:]:  # ignore first day (=today)
-            for daily in self.weather_data.hourly:
-                rain = daily.rain
-                if rain is not None:
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
-                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(rain.one_hour, 0, 5)), pos=(day_pos, 0))
-                day_pos = day_pos + pix_day
-
-    def redraw_temperatures(self):
-        min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_hourly_temp_min_max()
-        print(min_temp, max_temp)
-
-        ticks = self._get_ticks(min_5_temp, max_5_temp)
-        print(ticks)
-
-        with self.canvas:
-
+            # Temperature ticks
+            min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_hourly_temp_min_max()
+            ticks = self._get_ticks(min_5_temp, max_5_temp)
             for tick in ticks:
                 Color(*get_color_from_hex('#2E2E2E'))
                 Line(points=[0, self._temperature_to_pixel(tick, min_5_temp, max_5_temp), self._get_chart_width(),
@@ -90,12 +74,21 @@ class ForecastHourlyWidget(Widget):
                           pos=(-26, self._temperature_to_pixel(tick, min_5_temp, max_5_temp) - 8),
                           texture=text)
 
+            # Hour ticks
             pix_hour = self._get_chart_width() / 48
-            hour_pos = pix_hour / 2 - 16
-            temp_values = []
-            cnt = 0
+            hour_pos = 0
+            Color(*get_color_from_hex('#2E2E2E80'))
             for hourly in self.weather_data.hourly:
+                Line(points=[hour_pos, 0, hour_pos, -8], width=1)
+                if hourly.dt.hour == 0 and hourly.dt.minute == 0:
+                    Line(points=[hour_pos, 0, hour_pos, self._get_chart_height()], width=1)
+                hour_pos += pix_hour
 
+            # Hour values
+            hour_pos = pix_hour / 2 - 20
+            cnt = 0
+            Color(*get_color_from_hex('#2E2E2E'))
+            for hourly in self.weather_data.hourly:
                 if cnt % 12 == 0:
                     hour = f"{hourly.dt:%H:%M}"
 
@@ -107,12 +100,31 @@ class ForecastHourlyWidget(Widget):
                 hour_pos += pix_hour
                 cnt += 1
 
+    def redraw_rain(self):
+        with self.canvas:
+            pix_day = self._get_chart_width() / 48
+            day_pos = 0
+
+            for daily in self.weather_data.hourly:
+                rain = daily.rain
+                if rain is not None:
+                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
+                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(rain.one_hour, 0, 5)), pos=(day_pos, 0))
+                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(rain.one_hour, 0, 5)), pos=(day_pos, 0))
+                day_pos = day_pos + pix_day
+
+    def redraw_temperatures(self):
+        with self.canvas:
+            min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_hourly_temp_min_max()
+
+            temp_values = []
+            for hourly in self.weather_data.hourly:
                 temp_values.append(hourly.temp)
 
+            pix_hour = self._get_chart_width() / 48
             chart_width_reduced = self._get_chart_width() - pix_hour  # chart begins/ends in middle of first and last day
             chart_x_values = list(range(0, int(chart_width_reduced)))
 
-            # chart of minimum/maximum temperatures
             x_values = list(range(0, len(temp_values)))
             func_temp = interp1d(x_values, temp_values, kind='quadratic')
 

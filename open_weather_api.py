@@ -1,4 +1,8 @@
 import urllib.request
+
+from kivy import Logger
+from kivy.network.urlrequest import UrlRequest
+
 from open_weather_data import OpenWeatherData
 
 
@@ -10,9 +14,11 @@ class OpenWeatherApi:
         self.open_weather_url = url.format(lat=lat, lon=lon, units=units, lang=lang, apikey=apikey)
 
     def getdata(self):
-        request = urllib.request.urlopen(self.open_weather_url)
+        Logger.info('Calling API')
 
-        json = request.read().decode("utf8")
+        req = UrlRequest(self.open_weather_url)
 
-        return OpenWeatherData.from_dict(json.loads(json))
+        req.wait()
+
+        return OpenWeatherData.from_dict(req.result)
 

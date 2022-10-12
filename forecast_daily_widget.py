@@ -2,7 +2,7 @@ import math
 
 from kivy.core.text import Label
 from kivy.graphics import Color, PushMatrix, PopMatrix, Translate, Line, Rectangle
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 from scipy.interpolate import interp1d
@@ -21,14 +21,8 @@ class ForecastDailyWidget(Widget):
         self.offset_y_bottom = 35
         self.offset_y_top = 20
 
-        #self.bind(size=self._update, pos=self._update)
-
-    # def _update(self, instance, value):
-    #     print("_update")
-    #     self.redraw()
-
     def on_weather_data(self, instance, value):
-        print("on_weather_data")
+
         self.redraw()
 
     def redraw(self):
@@ -40,15 +34,32 @@ class ForecastDailyWidget(Widget):
                 PushMatrix()
                 Translate(self.x + self.offset_x_left, self.y + self.offset_y_bottom)
 
+            self.redraw_legend()
             self.redraw_rain()
-            self.redraw_temperatures()
+            #self.redraw_temperatures()
+            self.redraw_temperatures2()
 
             with self.canvas:
                 PopMatrix()
 
-    def redraw_rain(self):
+    def redraw_legend(self):
         with self.canvas:
+            # Day names
+            pix_day = self._get_chart_width() / 8
+            day_pos = pix_day / 2 - 10
 
+            Color(*get_color_from_hex('#000000'))
+            for daily in self.weather_data.daily:
+                weekday = f"{daily.dt:%a}"
+
+                label = Label(text=weekday, font_size=14)
+                label.refresh()
+                text = label.texture
+                Rectangle(size=text.size, pos=(day_pos, -28), texture=text)
+
+                day_pos += pix_day
+
+            # Rain ticks
             Color(*get_color_from_hex('#000000'))
             for tick in (0, 1, 5, 10, 15, 20):
                 label = Label(text=f'{tick} l', font_size=14)
@@ -58,28 +69,15 @@ class ForecastDailyWidget(Widget):
                           pos=(self._get_chart_width() + 5, self._rain_to_pixel(tick, 0, 20) - 8),
                           texture=text)
 
-            pix_day = int(self._get_chart_width() / 8)
-            day_pos = 0
-            for daily in self.weather_data.daily:
-                rain = daily.rain
-                if rain is not None:
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
-                    Rectangle(size=(pix_day - 6, self._rain_to_pixel(rain, 0, 20)), pos=(day_pos + 3, 0))
-                day_pos = day_pos + pix_day
-
-    def redraw_temperatures(self):
-        min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_daily_temp_min_max()
-        print(min_temp, max_temp)
-
-        ticks = self._get_ticks(min_5_temp, max_5_temp)
-        print(ticks)
-
-        with self.canvas:
+            # Temperature ticks
+            min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_daily_temp_min_max()
+            ticks = self._get_ticks(min_5_temp, max_5_temp)
 
             for tick in ticks:
                 Color(*get_color_from_hex('#2E2E2E'))
-                Line(points=[0, self._temperature_to_pixel(tick, min_5_temp, max_5_temp), self._get_chart_width(),
-                             self._temperature_to_pixel(tick, min_5_temp, max_5_temp)], width=1)
+                Line(points=[0, self._temperature_to_pixel(tick, min_5_temp, max_5_temp),
+                             self._get_chart_width(), self._temperature_to_pixel(tick, min_5_temp, max_5_temp)],
+                     width=1)
 
                 Color(*get_color_from_hex('#000000'))
                 label = Label(text=f'{tick}°', font_size=14)
@@ -89,20 +87,47 @@ class ForecastDailyWidget(Widget):
                           pos=(-26, self._temperature_to_pixel(tick, min_5_temp, max_5_temp) - 8),
                           texture=text)
 
-            pix_day = int(self._get_chart_width() / 8)
-            day_pos = pix_day / 2 - 10
+    def redraw_rain(self):
+        with self.canvas:
+            pix_day = self._get_chart_width() / 8
+            day_pos = 0
+            for daily in self.weather_data.daily:
+                rain = daily.rain
+                if rain is not None:
+                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
+                    Rectangle(size=(pix_day - 6, self._rain_to_pixel(rain, 0, 20)), pos=(day_pos + 3, 0))
+                day_pos = day_pos + pix_day
+
+    def redraw_temperatures2(self):
+        with self.canvas:
+            min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_daily_temp_min_max()
+            pix_day = self._get_chart_width() / 8
+            day_pos = 0
+
+            for daily in self.weather_data.daily:
+                Color(rgba=get_color_from_hex("#0000F4"))
+                Line(points=[day_pos, self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp),
+                             day_pos + pix_day, self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)],
+                     width=1.2)
+
+                Color(rgba=get_color_from_hex("#F40000"))
+                Line(points=[day_pos, self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp),
+                             day_pos + pix_day, self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)],
+                     width=1.2)
+
+                day_pos += pix_day
+
+
+
+
+    def redraw_temperatures(self):
+        with self.canvas:
+            min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_daily_temp_min_max()
+            pix_day = self._get_chart_width() / 8
             # temp_values = []
             temp_min_values = []
             temp_max_values = []
-            for daily in self.weather_data.daily:  # ignore first day (=today)
-                weekday = f"{daily.dt:%a}"
-
-                label = Label(text=weekday, font_size=14)
-                label.refresh()
-                text = label.texture
-                Rectangle(size=text.size, pos=(day_pos, -28), texture=text)
-
-                day_pos += pix_day
+            for daily in self.weather_data.daily:
 
                 # temp_values.append(daily.temp.minimum)
                 # temp_values.append(daily.temp.morn)
@@ -124,12 +149,12 @@ class ForecastDailyWidget(Widget):
             #     Point(points=(x, self._val_to_pixel(y, min_5_temp, max_5_temp)))
 
             chart_width_reduced = self._get_chart_width() - pix_day  # chart begins/ends in middle of first and last day
-            chart_x_values = list(range(0, chart_width_reduced))
+            chart_x_values = list(range(0, int(chart_width_reduced)))
 
             # chart of minimum/maximum temperatures
             x_values = list(range(0, len(temp_min_values)))
-            func_temp_min = interp1d(x_values, temp_min_values, kind='quadratic')
-            func_temp_max = interp1d(x_values, temp_max_values, kind='quadratic')
+            func_temp_min = interp1d(x_values, temp_min_values, kind='linear')
+            func_temp_max = interp1d(x_values, temp_max_values, kind='linear')
 
             min_points = []
             max_points = []
