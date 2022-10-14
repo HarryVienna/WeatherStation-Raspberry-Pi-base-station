@@ -43,36 +43,76 @@
             BoxLayout: # 1. Zeile auf der rechten Seite
                 size_hint: 1, 0.4
                 orientation: 'horizontal'
-                Label:
-                    id: temperature
-                    size_hint: 0.7, 1
-                    color: utils.get_color_from_hex("#F56101")
-                    text: root.temperature
-                    text_size: self.size
-                    font_size: 42
-                    halign: 'left'
-                    valign: 'middle'
-                BoxLayout: # Zeilen mit max und min Werten
-                    size_hint: 0.3, 1
-                    orientation: 'vertical'
-                    padding: [0, 0, 4, 0]
-                    Label:
-                        id: max_temperature
-                        color: utils.get_color_from_hex("#F40000")
-                        text: root.max_temperature
 
-                        text_size: self.size
-                        font_size: 18
-                        halign: 'right'
+                BoxLayout: # Für Temperatur und Einheit
+                    size_hint: 0.6, 1
+                    orientation: 'horizontal'
+                    Label:
+                        id: temperature
+                        size_hint: None, 1
+                        width: self.texture_size[0]
+                        color: utils.get_color_from_hex("#F56101")
+                        text: root.temperature
+                        font_size: 42
+                        halign: 'left'
                         valign: 'middle'
                     Label:
-                        id: min_temperature
-                        color: utils.get_color_from_hex("#0000F4")
-                        text: root.min_temperature
+                        id: temperature_unit
+                        padding: [2, 0]
+                        color: utils.get_color_from_hex("#F56101")
+                        text: root.temperature_unit
                         text_size: self.size
-                        font_size: 18
-                        halign: 'right'
-                        valign: 'middle'
+                        font_size: 28
+                        halign: 'left'
+                        valign: 'top'
+
+                BoxLayout: # Zeilen mit max und min Werten
+                    size_hint: 0.4, 1
+                    orientation: 'vertical'
+                    BoxLayout: # Für max Temperatur und Einheit
+                        orientation: 'horizontal'
+                        size_hint: 1, 1
+                        Label:
+                            id: max_temperature
+                            color: utils.get_color_from_hex("#F40000")
+                            text: root.max_temperature
+
+                            size_hint: None, 1
+                            width: self.texture_size[0]
+                            font_size: 18
+                            halign: 'left'
+                            valign: 'middle'
+                        Label:
+                            id: max_temperature_unit
+                            padding: [2, 0]
+                            color: utils.get_color_from_hex("#F40000")
+                            text: root.temperature_unit
+                            text_size: self.size
+                            font_size: 16
+                            halign: 'left'
+                            valign: 'top'
+                    BoxLayout: # Für min Temperatur und Einheit
+                        orientation: 'horizontal'
+                        size_hint: 1, 1
+                        Label:
+                            id: min_temperature
+                            color: utils.get_color_from_hex("#0000F4")
+                            text: root.min_temperature
+
+                            size_hint: None, 1
+                            width: self.texture_size[0]
+                            font_size: 18
+                            halign: 'left'
+                            valign: 'middle'
+                        Label:
+                            id: max_temperature_unit
+                            padding: [2, 0]
+                            color: utils.get_color_from_hex("#0000F4")
+                            text: root.temperature_unit
+                            text_size: self.size
+                            font_size: 16
+                            halign: 'left'
+                            valign: 'top'
 
             BoxLayout: # 2. Zeile auf der rechten Seite
                 size_hint: 1, 0.2

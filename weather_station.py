@@ -25,7 +25,7 @@ class WeatherStation(Widget):
 
     def update_weather(self, dt):
 
-        f = open("tests/json/test1.json", mode="r", encoding="utf-8")
+        #f = open("tests/json/test1.json", mode="r", encoding="utf-8")
 
         try:
             #data = OpenWeatherData.from_dict(json.loads(f.read()))

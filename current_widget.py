@@ -9,6 +9,7 @@ class CurrentWidget(BoxLayout):
     icon = StringProperty('')
     time = StringProperty('')
     temperature = StringProperty('')
+    temperature_unit = StringProperty('')
     min_temperature = StringProperty('')
     max_temperature = StringProperty('')
 
@@ -32,9 +33,10 @@ class CurrentWidget(BoxLayout):
     def on_weather_data(self, instance, value):
 
         self.icon = f"icons/weather/{self.weather_data.current.weather[0].icon}.png"
-        self.temperature = f"{self.weather_data.current.temp:.1f}" + '\u2009°C'  # Half space
-        self.min_temperature = f"{self.weather_data.daily[0].temp.minimum:.1f}" + '\u2009°C'
-        self.max_temperature = f"{self.weather_data.daily[0].temp.maximum:.1f}" + '\u2009°C'
+        self.temperature = f"{self.weather_data.current.temp:.1f}"
+        self.temperature_unit = '°C'
+        self.min_temperature = f"{self.weather_data.daily[0].temp.minimum:.1f}"
+        self.max_temperature = f"{self.weather_data.daily[0].temp.maximum:.1f}"
 
         self.pressure = f"{self.weather_data.current.pressure:.0f}" + '\u2009hPa'
         self.humidity = f"{self.weather_data.current.humidity:.0f}" + '\u2009%'

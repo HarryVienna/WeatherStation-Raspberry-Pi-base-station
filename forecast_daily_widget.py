@@ -46,7 +46,7 @@ class ForecastDailyWidget(Widget):
         with self.canvas:
             # Day names
             pix_day = self._get_chart_width() / 8
-            day_pos = pix_day / 2 - 10
+            day_pos = pix_day / 2 - 8
 
             Color(*get_color_from_hex('#000000'))
             for daily in self.weather_data.daily:
@@ -95,7 +95,9 @@ class ForecastDailyWidget(Widget):
                 rain = daily.rain
                 if rain is not None:
                     Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
-                    Rectangle(size=(pix_day - 6, self._rain_to_pixel(rain, 0, 20)), pos=(day_pos + 3, 0))
+                    Rectangle(pos=(round(day_pos + 3), 0),
+                              size=(round(pix_day - 6), self._rain_to_pixel(rain, 0, 20))
+                              )
                 day_pos = day_pos + pix_day
 
     def redraw_temperatures2(self):
@@ -106,19 +108,20 @@ class ForecastDailyWidget(Widget):
 
             for daily in self.weather_data.daily:
                 Color(rgba=get_color_from_hex("#0000F4"))
-                Line(points=[day_pos, self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp),
-                             day_pos + pix_day, self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)],
-                     width=1.2)
+                Rectangle(pos=(round(day_pos + 3), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)),
+                          size=(round(pix_day - 6), 3))
+                # Line(points=[round(day_pos + 3), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp),
+                #              round(day_pos + pix_day - 6), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)],
+                #      width=1)
 
                 Color(rgba=get_color_from_hex("#F40000"))
-                Line(points=[day_pos, self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp),
-                             day_pos + pix_day, self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)],
-                     width=1.2)
+                Rectangle(pos=(round(day_pos + 3), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)),
+                          size=(round(pix_day - 6), 3))
+                # Line(points=[round(day_pos + 3), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp),
+                #              round(day_pos + pix_day - 6), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)],
+                #      width=1)
 
                 day_pos += pix_day
-
-
-
 
     def redraw_temperatures(self):
         with self.canvas:
@@ -183,7 +186,7 @@ class ForecastDailyWidget(Widget):
     def _temperature_to_pixel(self, value, min_value, max_value):
 
         pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
-        return int(pix)
+        return round(pix)
 
     def _rain_to_pixel(self, value, min_value, max_value):
 
@@ -192,7 +195,7 @@ class ForecastDailyWidget(Widget):
         max_sqrt = math.sqrt(max_value)
 
         pix = (value_sqrt - min_sqrt) / (max_sqrt - min_sqrt) * self._get_chart_height()
-        return int(pix)
+        return round(pix)
 
     def _get_chart_width(self):
         return self.width - (self.offset_x_left + self.offset_x_right)
