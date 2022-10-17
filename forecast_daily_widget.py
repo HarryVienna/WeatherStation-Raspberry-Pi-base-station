@@ -14,7 +14,7 @@ class ForecastDailyWidget(Widget):
     def __init__(self, *args, **kwargs):
         super(ForecastDailyWidget, self).__init__(*args, **kwargs)
 
-        self.weather_data = None
+        #self.weather_data = None
 
         self.offset_x_left = 32
         self.offset_x_right = 33
@@ -94,7 +94,7 @@ class ForecastDailyWidget(Widget):
             for daily in self.weather_data.daily:
                 rain = daily.rain
                 if rain is not None:
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
+                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(daily.pop * 255))))
                     Rectangle(pos=(round(day_pos + 3), 0),
                               size=(round(pix_day - 6), self._rain_to_pixel(rain, 0, 20))
                               )
@@ -152,12 +152,12 @@ class ForecastDailyWidget(Widget):
             #     Point(points=(x, self._val_to_pixel(y, min_5_temp, max_5_temp)))
 
             chart_width_reduced = self._get_chart_width() - pix_day  # chart begins/ends in middle of first and last day
-            chart_x_values = list(range(0, int(chart_width_reduced)))
+            chart_x_values = list(range(0, round(chart_width_reduced) - 1))
 
             # chart of minimum/maximum temperatures
             x_values = list(range(0, len(temp_min_values)))
-            func_temp_min = interp1d(x_values, temp_min_values, kind='linear')
-            func_temp_max = interp1d(x_values, temp_max_values, kind='linear')
+            func_temp_min = interp1d(x_values, temp_min_values, kind='quadratic')
+            func_temp_max = interp1d(x_values, temp_max_values, kind='quadratic')
 
             min_points = []
             max_points = []

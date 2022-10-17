@@ -1,8 +1,17 @@
+#:import SensorWidget sensor_widget
 #:import CurrentWidget current_widget
 #:import ForecastHourlyWidget forecast_hourly_widget
 #:import ForecastDailyWidget forecast_daily_widget
 #:import utils kivy.utils
 
+<SensorWidget>:
+    Label:
+        color: utils.get_color_from_hex("#2E2E2E")
+        text: root.temperature
+        text_size: self.size
+        font_size: 24
+        halign: 'center'
+        valign: 'middle'
 
 <CurrentWidget>:
     canvas.before:
@@ -53,7 +62,7 @@
                         width: self.texture_size[0]
                         color: utils.get_color_from_hex("#F56101")
                         text: root.temperature
-                        font_size: 42
+                        font_size: 48
                         halign: 'left'
                         valign: 'middle'
                     Label:
@@ -76,7 +85,7 @@
                             id: max_temperature
                             color: utils.get_color_from_hex("#F40000")
                             text: root.max_temperature
-
+                            padding: [5, 0]
                             size_hint: None, 1
                             width: self.texture_size[0]
                             font_size: 18
@@ -84,7 +93,6 @@
                             valign: 'middle'
                         Label:
                             id: max_temperature_unit
-                            padding: [2, 0]
                             color: utils.get_color_from_hex("#F40000")
                             text: root.temperature_unit
                             text_size: self.size
@@ -98,15 +106,14 @@
                             id: min_temperature
                             color: utils.get_color_from_hex("#0000F4")
                             text: root.min_temperature
-
+                            padding: [5, 0]
                             size_hint: None, 1
                             width: self.texture_size[0]
                             font_size: 18
                             halign: 'left'
                             valign: 'middle'
                         Label:
-                            id: max_temperature_unit
-                            padding: [2, 0]
+                            id: min_temperature_unit
                             color: utils.get_color_from_hex("#0000F4")
                             text: root.temperature_unit
                             text_size: self.size
@@ -268,11 +275,17 @@
             CurrentWidget:
                 id: current_widget
                 size_hint: 0.46, 1
-            Button:
+            SensorWidget:
+                id: current_widget_balkon
+                topic: 'balkon'
                 size_hint: 0.18, 1
-            Button:
+            SensorWidget:
+                id: current_widget_wohnzimmer
+                topic: 'wohnzimmer'
                 size_hint: 0.18, 1
-            Button:
+            SensorWidget:
+                id: current_widget_bad
+                topic: 'bad'
                 size_hint: 0.18, 1
 
         BoxLayout:

@@ -14,10 +14,10 @@ class ForecastHourlyWidget(Widget):
     def __init__(self, *args, **kwargs):
         super(ForecastHourlyWidget, self).__init__(*args, **kwargs)
 
-        self.weather_data = None
+        # self.weather_data = None
 
         self.offset_x_left = 32
-        self.offset_x_right = 33
+        self.offset_x_right = 26
         self.offset_y_bottom = 35
         self.offset_y_top = 20
 
@@ -106,11 +106,17 @@ class ForecastHourlyWidget(Widget):
             day_pos = 0
 
             for daily in self.weather_data.hourly:
+                pop = daily.pop
                 rain = daily.rain
+
                 if rain is not None:
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(int(daily.pop * 255))))
+                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(pop * 255))))
                     Rectangle(size=(pix_day - 1, self._rain_to_pixel(rain.one_hour, 0, 5)), pos=(day_pos, 0))
-                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(rain.one_hour, 0, 5)), pos=(day_pos, 0))
+                elif rain is None and pop > 0:
+                    # There is a probability of precipitation value > 0 but no rain data. Assume 0.05 for visualization
+                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(pop * 255))))
+                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(0.05, 0, 5)), pos=(day_pos, 0))
+
                 day_pos = day_pos + pix_day
 
     def redraw_temperatures(self):
@@ -123,7 +129,7 @@ class ForecastHourlyWidget(Widget):
 
             pix_hour = self._get_chart_width() / 48
             chart_width_reduced = self._get_chart_width() - pix_hour  # chart begins/ends in middle of first and last day
-            chart_x_values = list(range(0, int(chart_width_reduced)))
+            chart_x_values = list(range(0, round(chart_width_reduced) - 1))
 
             x_values = list(range(0, len(temp_values)))
             func_temp = interp1d(x_values, temp_values, kind='quadratic')
@@ -146,7 +152,7 @@ class ForecastHourlyWidget(Widget):
     def _temperature_to_pixel(self, value, min_value, max_value):
 
         pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
-        return int(pix)
+        return round(pix)
 
     def _rain_to_pixel(self, value, min_value, max_value):
 
@@ -155,7 +161,7 @@ class ForecastHourlyWidget(Widget):
         max_sqrt = math.sqrt(max_value)
 
         pix = (value_sqrt - min_sqrt) / (max_sqrt - min_sqrt) * self._get_chart_height()
-        return int(pix)
+        return round(pix)
 
     def _get_chart_width(self):
         return self.width - (self.offset_x_left + self.offset_x_right)

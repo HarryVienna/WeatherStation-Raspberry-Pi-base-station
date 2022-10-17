@@ -1,7 +1,6 @@
 import datetime
 import json
 
-from kivy import Logger
 from kivy.uix.widget import Widget
 
 from config import Config
@@ -24,15 +23,12 @@ class WeatherStation(Widget):
                                                self.cfg.params["openweather"]['apikey'])
 
     def update_weather(self, dt):
+        # f = open("tests/json/test22.json", mode="r", encoding="utf-8")
+        # data = OpenWeatherData.from_dict(json.loads(f.read()))
 
-        #f = open("tests/json/test1.json", mode="r", encoding="utf-8")
+        data = self.open_weather_api.getdata()
 
-        try:
-            #data = OpenWeatherData.from_dict(json.loads(f.read()))
-            data = self.open_weather_api.getdata()
-        except AssertionError as err:
-            Logger.info('Error Calling API')
-        else:
+        if data is not None:
             self.ids.current_widget.weather_data = data
             self.ids.forecast_hourly_widget.weather_data = data
             self.ids.forecast_daily_widget.weather_data = data

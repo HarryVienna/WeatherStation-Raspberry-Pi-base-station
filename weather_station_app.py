@@ -34,5 +34,8 @@ class WeatherStationApp(App):
 
         return weather_station
 
+    def on_start(self):
+        print("on_start ")
+
 if __name__ == "__main__":
     WeatherStationApp().run()

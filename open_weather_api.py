@@ -1,7 +1,5 @@
-import urllib.request
-
+import requests
 from kivy import Logger
-from kivy.network.urlrequest import UrlRequest
 
 from open_weather_data import OpenWeatherData
 
@@ -16,9 +14,20 @@ class OpenWeatherApi:
     def getdata(self):
         Logger.info('Calling API')
 
-        req = UrlRequest(self.open_weather_url)
+        try:
+            response = requests.get(self.open_weather_url)
+            response.raise_for_status()
+        except requests.exceptions.HTTPError:
+            Logger.info('Error Calling API')
+            return None
+        except requests.exceptions.ConnectionError:
+            Logger.info('Error Calling API')
+            return None
+        except requests.exceptions.Timeout:
+            Logger.info('Error Calling API')
+            return None
+        except requests.exceptions.RequestException:
+            Logger.info('Error Calling API')
+            return None
 
-        req.wait()
-
-        return OpenWeatherData.from_dict(req.result)
-
+        return OpenWeatherData.from_dict(response.json())
