@@ -23,10 +23,10 @@ class WeatherStation(Widget):
                                                self.cfg.params["openweather"]['apikey'])
 
     def update_weather(self, dt):
-        # f = open("tests/json/test22.json", mode="r", encoding="utf-8")
-        # data = OpenWeatherData.from_dict(json.loads(f.read()))
+        f = open("tests/json/test22.json", mode="r", encoding="utf-8")
+        data = OpenWeatherData.from_dict(json.loads(f.read()))
 
-        data = self.open_weather_api.getdata()
+        #data = self.open_weather_api.getdata()
 
         if data is not None:
             self.ids.current_widget.weather_data = data

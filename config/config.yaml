@@ -7,5 +7,6 @@ openweather:
   apikey: abdb6964a969eeceed4f072180f1d3a7
 
 kivy:
+  client: Wohnzimmer
   kv_directory: templates
   locale: de_DE.utf8

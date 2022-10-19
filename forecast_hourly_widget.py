@@ -142,7 +142,7 @@ class ForecastHourlyWidget(Widget):
                 )
 
             Color(rgba=get_color_from_hex("#F56101"))
-            Line(points=points, width=1.1)
+            Line(points=points, width=2)
 
     def _get_ticks(self, min_value, max_value):
 
