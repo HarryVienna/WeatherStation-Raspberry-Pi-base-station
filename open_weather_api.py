@@ -15,12 +15,13 @@ class OpenWeatherApi:
         Logger.info('Calling API')
 
         try:
-            response = requests.get(self.open_weather_url)
+            response = requests.get(self.open_weather_url, verify=False)
             response.raise_for_status()
         except requests.exceptions.HTTPError:
             Logger.info('Error Calling API')
             return None
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError as err:
+            print(err)
             Logger.info('Error Calling API')
             return None
         except requests.exceptions.Timeout:
@@ -30,4 +31,7 @@ class OpenWeatherApi:
             Logger.info('Error Calling API')
             return None
 
-        return OpenWeatherData.from_dict(response.json())
+        Logger.info(response.content)
+        weather_data = OpenWeatherData.from_dict(response.json())
+        Logger.info('Calling API end')
+        return weather_data

@@ -24,11 +24,12 @@ class SensorWidget(BoxLayout):
         super().__init__(**kwargs)
 
     def on_kv_post(self, base_widget):
+        print("on_kv_post " + self.topic)
         self.mqttc = mqtt.Client(client_id="", protocol=mqtt.MQTTv311)
         self.mqttc.on_connect = self.onConnect
         self.mqttc.on_message = self.onMessage
         self.mqttc.connect("192.168.0.200", 1883, keepalive=60, bind_address="")
-        self.mqttc.loop_start()  # start loop to process callbacks! (new thread!)
+        self.mqttc.loop_start()
 
     def onConnect(self, client, userdata, flags, rc):
         print("onConnect " + self.topic)
@@ -36,7 +37,7 @@ class SensorWidget(BoxLayout):
 
     def onMessage(self, client, userdata, msg):
         msg.payload = msg.payload.decode("utf-8")
-        Logger.info("topic: " + msg.topic +" msg: "+ msg.payload)
+        Logger.info("Message: " + "topic= " + msg.topic +" msg= "+ msg.payload)
 
         data = SensorData.from_dict(json.loads(msg.payload))
         self.update = f"{datetime.datetime.today():%H:%M}"

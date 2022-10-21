@@ -36,18 +36,28 @@ class ForecastDailyWidget(Widget):
 
             self.redraw_legend()
             self.redraw_rain()
-            #self.redraw_temperatures()
-            self.redraw_temperatures2()
+            # self.redraw_temperatures_curves()
+            self.redraw_temperatures_lines()
 
             with self.canvas:
                 PopMatrix()
 
     def redraw_legend(self):
         with self.canvas:
-            # Day names
             pix_day = self._get_chart_width() / 8
-            day_pos = pix_day / 2 - 8
 
+            # Alternating background
+            day_pos = 0
+            for i in range(len( self.weather_data.daily)):
+                if (i % 2) == 0:
+                    Color(*get_color_from_hex('#FFFFFF'))
+                else:
+                    Color(*get_color_from_hex('#F0F0F0'))
+                Rectangle(size=(pix_day,self._get_chart_height()), pos=(day_pos, 0))
+                day_pos += pix_day
+
+            # Day names
+            day_pos = pix_day / 2 - 8
             Color(*get_color_from_hex('#000000'))
             for daily in self.weather_data.daily:
                 weekday = f"{daily.dt:%a}"
@@ -100,7 +110,7 @@ class ForecastDailyWidget(Widget):
                               )
                 day_pos = day_pos + pix_day
 
-    def redraw_temperatures2(self):
+    def redraw_temperatures_lines(self):
         with self.canvas:
             min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_daily_temp_min_max()
             pix_day = self._get_chart_width() / 8
@@ -123,7 +133,7 @@ class ForecastDailyWidget(Widget):
 
                 day_pos += pix_day
 
-    def redraw_temperatures(self):
+    def redraw_temperatures_curves(self):
         with self.canvas:
             min_temp, min_5_temp, max_temp, max_5_temp = self.weather_data.get_daily_temp_min_max()
             pix_day = self._get_chart_width() / 8

@@ -1,8 +1,6 @@
 import locale
 
 from kivy.app import App
-from kivy.clock import Clock
-
 from kivy.core.window import Window
 
 from config import Config
@@ -25,17 +23,11 @@ class WeatherStationApp(App):
 
         locale.setlocale(locale.LC_TIME, self.cfg.params["kivy"]['locale'])
 
-        weather_station = WeatherStation()
-
-        Clock.schedule_once(weather_station.update_weather)
-
-        Clock.schedule_interval(weather_station.update_weather, 60.0 * 5)
-        Clock.schedule_interval(weather_station.update_time, 1.0)
-
-        return weather_station
+        return WeatherStation()
 
     def on_start(self):
         print("on_start ")
+
 
 if __name__ == "__main__":
     WeatherStationApp().run()

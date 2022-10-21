@@ -1,6 +1,8 @@
-import datetime
 import json
+from datetime import datetime
 
+from kivy import Logger
+from kivy.clock import Clock
 from kivy.uix.widget import Widget
 
 from config import Config
@@ -22,16 +24,24 @@ class WeatherStation(Widget):
                                                self.cfg.params["openweather"]['lang'],
                                                self.cfg.params["openweather"]['apikey'])
 
-    def update_weather(self, dt):
-        f = open("tests/json/test22.json", mode="r", encoding="utf-8")
-        data = OpenWeatherData.from_dict(json.loads(f.read()))
+    def on_kv_post(self, base_widget):
+        Clock.schedule_once(self.update_weather)
 
-        #data = self.open_weather_api.getdata()
+        Clock.schedule_interval(self.update_weather, 60.0 * 10)
+        Clock.schedule_interval(self.update_time, 1.0)
+
+    def update_weather(self, dt):
+        Logger.info("update_weather: start")
+        #f = open("tests/json/test21.json", mode="r", encoding="utf-8")
+        #data = OpenWeatherData.from_dict(json.loads(f.read()))
+
+        data = self.open_weather_api.getdata()
 
         if data is not None:
             self.ids.current_widget.weather_data = data
             self.ids.forecast_hourly_widget.weather_data = data
             self.ids.forecast_daily_widget.weather_data = data
+        Logger.info("update_weather: end")
 
     def update_time(self, dt):
-        self.ids.current_widget.time_data = datetime.datetime.today()
+        self.ids.current_widget.time_data = datetime.today()

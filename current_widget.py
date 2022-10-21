@@ -25,7 +25,7 @@ class CurrentWidget(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.weather_data = None
+        #self.weather_data = None
 
     def on_time_data(self, instance, value):
         self.time = f"{self.time_data:%a, %x    %X}"
