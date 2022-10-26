@@ -15,7 +15,3 @@ class SensorData:
         _humidity = float(obj.get("humidity"))
         _pressure = float(obj.get("pressure"))
         return SensorData(_battery, _temperature, _humidity, _pressure)
-
-# Example Usage
-# jsonstring = json.loads(myjsonstring)
-# root = Root.from_dict(jsonstring)

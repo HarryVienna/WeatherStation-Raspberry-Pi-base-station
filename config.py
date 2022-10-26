@@ -4,7 +4,7 @@ class Config:
     def __init__(self, path):
 
         self.params = {}
-        with open(path, "r") as stream:
+        with open(path, "r", encoding='utf-8') as stream:
             try:
                 self.params = yaml.safe_load(stream)
             except yaml.YAMLError as exc:

@@ -12,9 +12,7 @@ class ForecastDailyWidget(Widget):
     weather_data = ObjectProperty()
 
     def __init__(self, *args, **kwargs):
-        super(ForecastDailyWidget, self).__init__(*args, **kwargs)
-
-        #self.weather_data = None
+        super().__init__(**kwargs)
 
         self.offset_x_left = 32
         self.offset_x_right = 33
@@ -48,12 +46,12 @@ class ForecastDailyWidget(Widget):
 
             # Alternating background
             day_pos = 0
-            for i in range(len( self.weather_data.daily)):
+            for i in range(len(self.weather_data.daily)):
                 if (i % 2) == 0:
                     Color(*get_color_from_hex('#FFFFFF'))
                 else:
                     Color(*get_color_from_hex('#F0F0F0'))
-                Rectangle(size=(pix_day,self._get_chart_height()), pos=(day_pos, 0))
+                Rectangle(size=(pix_day, self._get_chart_height()), pos=(day_pos, 0))
                 day_pos += pix_day
 
             # Day names

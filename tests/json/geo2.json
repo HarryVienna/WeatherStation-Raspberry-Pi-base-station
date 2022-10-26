@@ -1,0 +1,14 @@
+https://api.openweathermap.org/geo/1.0/direct?q=Ottakring,,AT&appid=abdb6964a969eeceed4f072180f1d3a7
+[
+  {
+    "name": "Ottakring",
+    "local_names": {
+      "uk": "Оттакрінг",
+      "de": "Ottakring",
+      "ru": "Оттакринг"
+    },
+    "lat": 48.2149546,
+    "lon": 16.302153494876826,
+    "country": "AT"
+  }
+]

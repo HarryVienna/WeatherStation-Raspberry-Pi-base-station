@@ -6,22 +6,30 @@ from open_weather_data import OpenWeatherData
 
 class OpenWeatherApi:
 
-    def __init__(self, url, lat, lon, units, lang, apikey):
+    def __init__(self, url, lat, lon, units, lang, appid):
         super().__init__()
 
-        self.open_weather_url = url.format(lat=lat, lon=lon, units=units, lang=lang, apikey=apikey)
+        self.url = url
+        self.lat = lat
+        self.lon = lon
+        self.units = units
+        self.lang = lang
+        self.appid = appid
 
     def getdata(self):
         Logger.info('Calling API')
 
         try:
-            response = requests.get(self.open_weather_url, verify=False)
+            response = requests.get(self.url, params={"lat": self.lat,
+                                                      "lon": self.lon,
+                                                      "units": self.units,
+                                                      "lang": self.lang,
+                                                      "appid": self.appid}, verify=False)
             response.raise_for_status()
         except requests.exceptions.HTTPError:
             Logger.info('Error Calling API')
             return None
-        except requests.exceptions.ConnectionError as err:
-            print(err)
+        except requests.exceptions.ConnectionError:
             Logger.info('Error Calling API')
             return None
         except requests.exceptions.Timeout:

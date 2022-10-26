@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 
 from kivy import Logger
@@ -7,7 +6,6 @@ from kivy.uix.widget import Widget
 
 from config import Config
 from open_weather_api import OpenWeatherApi
-from open_weather_data import OpenWeatherData
 
 
 class WeatherStation(Widget):
@@ -22,12 +20,11 @@ class WeatherStation(Widget):
                                                self.cfg.params["openweather"]['lon'],
                                                self.cfg.params["openweather"]['units'],
                                                self.cfg.params["openweather"]['lang'],
-                                               self.cfg.params["openweather"]['apikey'])
+                                               self.cfg.params["openweather"]['appid'])
 
-    def on_kv_post(self, base_widget):
         Clock.schedule_once(self.update_weather)
 
-        Clock.schedule_interval(self.update_weather, 60.0 * 10)
+        Clock.schedule_interval(self.update_weather, self.cfg.params["openweather"]['interval'])
         Clock.schedule_interval(self.update_time, 1.0)
 
     def update_weather(self, dt):

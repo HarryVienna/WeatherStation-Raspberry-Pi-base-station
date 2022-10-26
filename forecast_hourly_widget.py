@@ -12,7 +12,7 @@ class ForecastHourlyWidget(Widget):
     weather_data = ObjectProperty()
 
     def __init__(self, *args, **kwargs):
-        super(ForecastHourlyWidget, self).__init__(*args, **kwargs)
+        super().__init__(**kwargs)
 
         # self.weather_data = None
 
