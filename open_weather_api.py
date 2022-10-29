@@ -39,7 +39,7 @@ class OpenWeatherApi:
             Logger.info('Error Calling API')
             return None
 
-        Logger.info(response.content)
+        #Logger.info(response.content)
         weather_data = OpenWeatherData.from_dict(response.json())
         Logger.info('Calling API end')
         return weather_data
