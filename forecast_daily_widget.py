@@ -69,12 +69,12 @@ class ForecastDailyWidget(Widget):
 
             # Rain ticks
             Color(*get_color_from_hex('#000000'))
-            for tick in (0, 1, 5, 10, 15, 20):
+            for tick in (0, 1, 5, 10, 20, 30):
                 label = Label(text=f'{tick} l', font_size=14)
                 label.refresh()
                 text = label.texture
                 Rectangle(size=text.size,
-                          pos=(self._get_chart_width() + 5, self._rain_to_pixel(tick, 0, 20) - 8),
+                          pos=(self._get_chart_width() + 5, self._rain_to_pixel(tick, 0, 30) - 8),
                           texture=text)
 
             # Temperature ticks
@@ -104,7 +104,7 @@ class ForecastDailyWidget(Widget):
                 if rain is not None:
                     Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(daily.pop * 255))))
                     Rectangle(pos=(round(day_pos + 3), 0),
-                              size=(round(pix_day - 6), self._rain_to_pixel(rain, 0, 20))
+                              size=(round(pix_day - 6), self._rain_to_pixel(rain, 0, 30))
                               )
                 day_pos = day_pos + pix_day
 

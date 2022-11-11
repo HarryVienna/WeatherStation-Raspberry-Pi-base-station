@@ -40,6 +40,9 @@ class OpenWeatherApi:
             return None
 
         #Logger.info(response.content)
-        weather_data = OpenWeatherData.from_dict(response.json())
+        try:
+            weather_data = OpenWeatherData.from_dict(response.json())
+        except AssertionError:
+            Logger.error('AssertionError', exc_info=True)
         Logger.info('Calling API end')
         return weather_data

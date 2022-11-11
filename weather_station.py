@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from kivy import Logger
@@ -6,6 +7,7 @@ from kivy.uix.widget import Widget
 
 from config import Config
 from open_weather_api import OpenWeatherApi
+from open_weather_data import OpenWeatherData
 
 
 class WeatherStation(Widget):
@@ -29,7 +31,7 @@ class WeatherStation(Widget):
 
     def update_weather(self, dt):
         Logger.info("update_weather: start")
-        #f = open("tests/json/test21.json", mode="r", encoding="utf-8")
+        #f = open("tests/json/test23.json", mode="r", encoding="utf-8")
         #data = OpenWeatherData.from_dict(json.loads(f.read()))
 
         data = self.open_weather_api.getdata()
