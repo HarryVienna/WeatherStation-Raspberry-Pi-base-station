@@ -1,8 +1,10 @@
 import datetime
 
 from kivy import Logger
+from kivy.clock import Clock
 from kivy.properties import StringProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
+from functools import partial
 import paho.mqtt.client as mqtt
 import json
 
@@ -21,6 +23,7 @@ class SensorWidget(BoxLayout):
     humidity = StringProperty('????')
     battery = StringProperty('????')
     update = StringProperty('')
+    opacity = NumericProperty(0.0)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -51,3 +54,9 @@ class SensorWidget(BoxLayout):
         self.battery = f"{data.battery:.0f}" + " " + " " + self.cfg.params["kivy"]['battery_unit']
         self.update = f"{datetime.datetime.today():%H:%M}"
 
+        # Opacity can not be changed directly. You would get this error:
+        # "Cannot change graphics instruction outside the main Kivy thread"
+        Clock.schedule_once(partial(self.updateOpacity, 1.0))
+
+    def updateOpacity(self, opacity, *args):
+        self.opacity = opacity

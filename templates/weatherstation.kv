@@ -13,7 +13,7 @@
             size: self.width, self.height
             radius: [10,]
     orientation: 'vertical'
-
+    opacity: root.opacity
     BoxLayout: # Name
         size_hint: 1, 0.09
         orientation: 'horizontal'
@@ -105,7 +105,7 @@
             halign: 'left'
             valign: 'middle'
         Label:
-            id: pressure
+            id: battery
             size_hint: 0.50, 1
             padding: [5,0]
             color: utils.get_color_from_hex("#2E2E2E")
@@ -407,7 +407,7 @@
             SensorWidget:
                 id: current_widget_schlafzimmer
                 name: "Schlafzimmer"
-                topic: '/weatherstation/bedroom'
+                topic: '/weatherstation/sensor/00'
                 size_hint: 0.18, 1
 
         BoxLayout:

@@ -31,10 +31,10 @@ class WeatherStation(Widget):
 
     def update_weather(self, dt):
         Logger.info("update_weather: start")
-        #f = open("tests/json/test23.json", mode="r", encoding="utf-8")
-        #data = OpenWeatherData.from_dict(json.loads(f.read()))
+        f = open("tests/json/test24.json", mode="r", encoding="utf-8")
+        data = OpenWeatherData.from_dict(json.loads(f.read()))
 
-        data = self.open_weather_api.getdata()
+        #data = self.open_weather_api.getdata()
 
         if data is not None:
             self.ids.current_widget.weather_data = data
