@@ -1,7 +1,9 @@
 import math
+from itertools import chain
 
 from kivy.core.text import Label
 from kivy.graphics import Color, PushMatrix, PopMatrix, Translate, Line, Rectangle
+from kivy.graphics.texture import Texture
 from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
@@ -10,6 +12,8 @@ from scipy.interpolate import interp1d
 
 class ForecastDailyWidget(Widget):
     weather_data = ObjectProperty()
+
+    max_precipitation = 20
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
@@ -45,14 +49,22 @@ class ForecastDailyWidget(Widget):
             pix_day = self._get_chart_width() / 8
 
             # Alternating background
-            day_pos = 0
-            for i in range(len(self.weather_data.daily)):
-                if (i % 2) == 0:
-                    Color(*get_color_from_hex('#FFFFFF'))
-                else:
-                    Color(*get_color_from_hex('#F0F0F0'))
-                Rectangle(size=(pix_day, self._get_chart_height()), pos=(day_pos, 0))
+            # day_pos = 0
+            # for i in range(len(self.weather_data.daily)):
+            #     if (i % 2) == 0:
+            #         Color(*get_color_from_hex('#FFFFFF'))
+            #     else:
+            #         Color(*get_color_from_hex('#F0F0F0'))
+            #     Rectangle(pos=(day_pos, 1), size=(pix_day, self._get_chart_height()))
+            #     day_pos += pix_day
+
+            # Day ticks
+            day_pos = pix_day
+            Color(*get_color_from_hex('#2E2E2E40'))
+            for i in range(len(self.weather_data.daily) - 1):
+                Line(points=[day_pos, 0, day_pos, self._get_chart_height()], width=1)
                 day_pos += pix_day
+
 
             # Day names
             day_pos = pix_day / 2 - 8
@@ -69,12 +81,12 @@ class ForecastDailyWidget(Widget):
 
             # Rain ticks
             Color(*get_color_from_hex('#000000'))
-            for tick in (0, 1, 5, 10, 20, 30):
+            for tick in (0, 1, 5, 10, self.max_precipitation):
                 label = Label(text=f'{tick} l', font_size=14)
                 label.refresh()
                 text = label.texture
                 Rectangle(size=text.size,
-                          pos=(self._get_chart_width() + 5, self._rain_to_pixel(tick, 0, 30) - 8),
+                          pos=(self._get_chart_width() + 5, self._precipitation_to_pixel(tick, 0, self.max_precipitation) - 8),
                           texture=text)
 
             # Temperature ticks
@@ -101,10 +113,32 @@ class ForecastDailyWidget(Widget):
             day_pos = 0
             for daily in self.weather_data.daily:
                 rain = daily.rain
-                if rain is not None:
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(daily.pop * 255))))
-                    Rectangle(pos=(round(day_pos + 3), 0),
-                              size=(round(pix_day - 6), self._rain_to_pixel(rain, 0, 30))
+                snow = daily.snow
+
+                if rain is not None and rain > self.max_precipitation:
+                    rain = self.max_precipitation
+                if snow is not None and snow > self.max_precipitation:
+                    snow = self.max_precipitation
+
+                if rain is not None and snow is not None:
+                    Color(*get_color_from_hex('#FFFFFF'))
+                    colors = (get_color_from_hex("#F5C700"),
+                              get_color_from_hex("#2E61F5" ) )
+                    texture = Texture.create(size=(1,len(colors)), colorfmt='rgba')
+                    buf = bytes([int(v * 255) for v in chain(*colors)])
+                    texture.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
+
+                    Rectangle(texture=texture, pos=(round(day_pos + 3), 1),
+                              size=(round(pix_day - 6), self._precipitation_to_pixel(rain+snow, 0, self.max_precipitation)))
+                elif rain is not None:
+                    Color(*get_color_from_hex('#2E61F5' + '{0:02x}'.format(round(daily.pop * 255))))
+                    Rectangle(pos=(round(day_pos + 3), 1),
+                              size=(round(pix_day - 6), self._precipitation_to_pixel(rain, 0, self.max_precipitation))
+                              )
+                elif snow is not None:
+                    Color(*get_color_from_hex('#F5C700' + '{0:02x}'.format(round(daily.pop * 255))))
+                    Rectangle(pos=(round(day_pos + 3), 1),
+                              size=(round(pix_day - 6), self._precipitation_to_pixel(snow, 0, self.max_precipitation))
                               )
                 day_pos = day_pos + pix_day
 
@@ -196,13 +230,14 @@ class ForecastDailyWidget(Widget):
         pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
         return round(pix)
 
-    def _rain_to_pixel(self, value, min_value, max_value):
+    def _precipitation_to_pixel(self, value, min_value, max_value):
 
         value_sqrt = math.sqrt(value)
         min_sqrt = math.sqrt(min_value)
         max_sqrt = math.sqrt(max_value)
 
         pix = (value_sqrt - min_sqrt) / (max_sqrt - min_sqrt) * self._get_chart_height()
+        #pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
         return round(pix)
 
     def _get_chart_width(self):

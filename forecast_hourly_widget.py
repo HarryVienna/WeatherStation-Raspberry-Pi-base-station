@@ -11,6 +11,8 @@ from scipy.interpolate import interp1d
 class ForecastHourlyWidget(Widget):
     weather_data = ObjectProperty()
 
+    max_precipitation = 5
+
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
 
@@ -50,12 +52,12 @@ class ForecastHourlyWidget(Widget):
         with self.canvas:
             # Rain ticks
             Color(*get_color_from_hex('#000000'))
-            for tick in (0, 1, 2, 3, 4, 5):
+            for tick in (0, 1, 2, 3, 4, self.max_precipitation):
                 label = Label(text=f'{tick} l', font_size=14)
                 label.refresh()
                 text = label.texture
                 Rectangle(size=text.size,
-                          pos=(self._get_chart_width() + 5, self._rain_to_pixel(tick, 0, 5) - 8),
+                          pos=(self._get_chart_width() + 5, self.precipitation_to_pixel(tick, 0, self.max_precipitation) - 8),
                           texture=text)
 
             # Temperature ticks
@@ -108,14 +110,26 @@ class ForecastHourlyWidget(Widget):
             for daily in self.weather_data.hourly:
                 pop = daily.pop
                 rain = daily.rain
+                snow = daily.snow
+
+                if rain is not None and rain.one_hour > self.max_precipitation:
+                    rain = self.max_precipitation
+                if snow is not None and snow.one_hour > self.max_precipitation:
+                    snow = self.max_precipitation
 
                 if rain is not None:
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(pop * 255))))
-                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(rain.one_hour, 0, 5)), pos=(day_pos, 0))
-                elif rain is None and pop > 0:
-                    # There is a probability of precipitation value > 0 but no rain data. Assume 0.05 for visualization
-                    Color(*get_color_from_hex('#2FC7C6' + '{0:02x}'.format(round(pop * 255))))
-                    Rectangle(size=(pix_day - 1, self._rain_to_pixel(0.05, 0, 5)), pos=(day_pos, 0))
+                    Color(*get_color_from_hex('#2E61F5' + '{0:02x}'.format(round(pop * 255))))
+                    Rectangle(pos=(day_pos, 0),
+                              size=(pix_day - 1, self.precipitation_to_pixel(rain.one_hour, 0, 5)))
+                elif snow is not None:
+                    Color(*get_color_from_hex('#F5C700' + '{0:02x}'.format(round(pop * 255))))
+                    Rectangle(pos=(day_pos, 0),
+                              size=(pix_day - 1, self.precipitation_to_pixel(snow.one_hour, 0, 5)))
+                elif pop > 0:
+                    # There is a probability of precipitation value > 0 but no rain data. Assume 0.025 for visualization
+                    Color(*get_color_from_hex('#2E61F5' + '{0:02x}'.format(round(pop * 255))))
+                    Rectangle(pos=(day_pos, 0),
+                              size=(pix_day - 1, self.precipitation_to_pixel(0.025, 0, 5)))
 
                 day_pos = day_pos + pix_day
 
@@ -154,7 +168,7 @@ class ForecastHourlyWidget(Widget):
         pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
         return round(pix)
 
-    def _rain_to_pixel(self, value, min_value, max_value):
+    def precipitation_to_pixel(self, value, min_value, max_value):
 
         value_sqrt = math.sqrt(value)
         min_sqrt = math.sqrt(min_value)
