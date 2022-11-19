@@ -122,7 +122,7 @@ class ForecastHourlyWidget(Widget):
                     Rectangle(pos=(day_pos, 0),
                               size=(pix_day - 1, self.precipitation_to_pixel(rain.one_hour, 0, 5)))
                 elif snow is not None:
-                    Color(*get_color_from_hex('#F5C700' + '{0:02x}'.format(round(pop * 255))))
+                    Color(*get_color_from_hex('#D70FFA' + '{0:02x}'.format(round(pop * 255))))
                     Rectangle(pos=(day_pos, 0),
                               size=(pix_day - 1, self.precipitation_to_pixel(snow.one_hour, 0, 5)))
                 elif pop > 0:
