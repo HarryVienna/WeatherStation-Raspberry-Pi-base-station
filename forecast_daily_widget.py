@@ -122,21 +122,21 @@ class ForecastDailyWidget(Widget):
 
                 if rain is not None and snow is not None:
                     Color(*get_color_from_hex('#FFFFFF'))
-                    colors = (get_color_from_hex("#D70FFA"),
-                              get_color_from_hex("#2E61F5" ) )
-                    texture = Texture.create(size=(1,len(colors)), colorfmt='rgba')
+                    colors = (get_color_from_hex("#EB8DFA"),
+                              get_color_from_hex("#96C6F5" ) )
+                    texture = Texture.create(size=(1,len(colors)), colorfmt='rgba', bufferfmt='ubyte')
                     buf = bytes([int(v * 255) for v in chain(*colors)])
                     texture.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
 
                     Rectangle(texture=texture, pos=(round(day_pos + 3), 1),
                               size=(round(pix_day - 6), self._precipitation_to_pixel(rain+snow, 0, self.max_precipitation)))
                 elif rain is not None:
-                    Color(*get_color_from_hex('#2E61F5' + '{0:02x}'.format(round(daily.pop * 255))))
+                    Color(*get_color_from_hex('#96C6F5' + '{0:02x}'.format(round(daily.pop * 255))))
                     Rectangle(pos=(round(day_pos + 3), 1),
                               size=(round(pix_day - 6), self._precipitation_to_pixel(rain, 0, self.max_precipitation))
                               )
                 elif snow is not None:
-                    Color(*get_color_from_hex('#D70FFA' + '{0:02x}'.format(round(daily.pop * 255))))
+                    Color(*get_color_from_hex('#EB8DFA' + '{0:02x}'.format(round(daily.pop * 255))))
                     Rectangle(pos=(round(day_pos + 3), 1),
                               size=(round(pix_day - 6), self._precipitation_to_pixel(snow, 0, self.max_precipitation))
                               )

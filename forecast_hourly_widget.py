@@ -118,11 +118,11 @@ class ForecastHourlyWidget(Widget):
                     snow = self.max_precipitation
 
                 if rain is not None:
-                    Color(*get_color_from_hex('#2E61F5' + '{0:02x}'.format(round(pop * 255))))
+                    Color(*get_color_from_hex('#96C6F5' + '{0:02x}'.format(round(pop * 255))))
                     Rectangle(pos=(day_pos, 0),
                               size=(pix_day - 1, self.precipitation_to_pixel(rain.one_hour, 0, 5)))
                 elif snow is not None:
-                    Color(*get_color_from_hex('#D70FFA' + '{0:02x}'.format(round(pop * 255))))
+                    Color(*get_color_from_hex('#EB8DFA' + '{0:02x}'.format(round(pop * 255))))
                     Rectangle(pos=(day_pos, 0),
                               size=(pix_day - 1, self.precipitation_to_pixel(snow.one_hour, 0, 5)))
                 elif pop > 0:
