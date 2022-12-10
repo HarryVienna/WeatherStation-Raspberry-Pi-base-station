@@ -13,14 +13,14 @@
             size: self.width, self.height
             radius: [10,]
     orientation: 'vertical'
-    opacity: root.opacity
+
     BoxLayout: # Name
-        size_hint: 1, 0.09
+        size_hint: 1, 0.15
         orientation: 'horizontal'
         valign: 'top'
 
         Label:
-            id: temperature
+            id: name
             size_hint: 1, 1
             width: self.texture_size[0]
             color: utils.get_color_from_hex("#2E2E2E")
@@ -30,10 +30,10 @@
             halign: 'center'
 
     BoxLayout: # Für Temperatur und Einheit
-        size_hint: 1, 0.17
+        size_hint: 1, 0.30
         orientation: 'horizontal'
         valign: 'top'
-        padding: 10,0,0,0
+        padding: 5,0,5,0
 
         Label:
             id: temperature
@@ -41,7 +41,8 @@
             width: self.texture_size[0]
             color: utils.get_color_from_hex("#F56101")
             text: root.temperature
-            font_size: 42
+            font_size: 46
+            bold: True
 
         Label:
             id: temperature_unit
@@ -53,7 +54,28 @@
             valign: 'top'
 
     BoxLayout: # 2. Zeile
-        size_hint: 1, 0.10
+        size_hint: 1, 0.19
+        orientation: 'horizontal'
+        padding: 10,0,0,0
+
+        Image:
+            size_hint: 0.10, 1
+            source: 'icons/humidity.png'
+            halign: 'left'
+            valign: 'middle'
+        Label:
+            id: humidity
+            size_hint: 0.50, 1
+            padding: [5,0]
+            color: utils.get_color_from_hex("#2E2E2E")
+            halign: 'left'
+            valign: 'middle'
+            text: root.humidity
+            text_size: self.size
+            font_size: 20
+
+    BoxLayout: # 3. Zeile
+        size_hint: 1, 0.19
         orientation: 'horizontal'
         padding: 10,0,0,0
 
@@ -73,62 +95,43 @@
             text_size: self.size
             font_size: 20
 
-    BoxLayout: # 3. Zeile
-        size_hint: 1, 0.10
-        orientation: 'horizontal'
-        padding: 10,0,0,0
-
-        Image:
-            size_hint: 0.10, 1
-            source: 'icons/humidity.png'
-            halign: 'left'
-            valign: 'middle'
-        Label:
-            id: pressure
-            size_hint: 0.50, 1
-            padding: [5,0]
-            color: utils.get_color_from_hex("#2E2E2E")
-            halign: 'left'
-            valign: 'middle'
-            text: root.humidity
-            text_size: self.size
-            font_size: 20
-
     BoxLayout: # 4. Zeile
-        size_hint: 1, 0.12
+        size_hint: 1, 0.17
         orientation: 'horizontal'
-        padding: 10,0,0,0
+        padding: 5,0,5,0
 
-        Image:
-            size_hint: 0.10, 1
-            source: 'icons/battery.png'
-            halign: 'left'
-            valign: 'middle'
+
         Label:
             id: battery
-            size_hint: 0.50, 1
-            padding: [5,0]
-            color: utils.get_color_from_hex("#2E2E2E")
-            halign: 'left'
-            valign: 'middle'
-            text: root.battery
-            text_size: self.size
-            font_size: 20
-
-    BoxLayout: # 5. Zeile
-        size_hint: 1, 0.06
-        orientation: 'horizontal'
-        padding: 10,0,0,0
-
-        Label:
-            id: pressure
-            size_hint: 1, 1
+            size_hint: 0.25, 1
+            padding: [0,0]
             color: utils.get_color_from_hex("#2E2E2E")
             halign: 'center'
             valign: 'middle'
-            text: root.update
+            text: root.battery
             text_size: self.size
-            font_size: 12
+            font_size: 14
+        Label:
+            id: wifi
+            size_hint: 0.45, 1
+            padding: [0,0]
+            color: utils.get_color_from_hex("#2E2E2E")
+            halign: 'center'
+            valign: 'middle'
+            text: root.wifi
+            text_size: self.size
+            font_size: 14
+        Label:
+            id: last_update
+            size_hint: 0.30, 1
+            padding: [0,0]
+            color: utils.get_color_from_hex("#2E2E2E")
+            halign: 'center'
+            valign: 'middle'
+            text: root.last_update
+            text_size: self.size
+            font_size: 14
+
 
 
 
@@ -182,6 +185,7 @@
                         color: utils.get_color_from_hex("#F56101")
                         text: root.temperature
                         font_size: 48
+                        bold: True
                         halign: 'left'
                         valign: 'middle'
                     Label:
@@ -395,17 +399,17 @@
                 id: current_widget
                 size_hint: 0.46, 1
             SensorWidget:
-                id: current_widget_balkon
+                id: balkon_widget
                 name: "Balkon"
                 topic: '/weatherstation/sensor/10'
                 size_hint: 0.18, 1
             SensorWidget:
-                id: current_widget_wohnzimmer
+                id: wohnzimmer_widget
                 name: "Wohnzimmer"
                 topic: '/weatherstation/sensor/01'
                 size_hint: 0.18, 1
             SensorWidget:
-                id: current_widget_schlafzimmer
+                id: schlafzimmer_widget
                 name: "Schlafzimmer"
                 topic: '/weatherstation/sensor/00'
                 size_hint: 0.18, 1

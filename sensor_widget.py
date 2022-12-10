@@ -21,9 +21,10 @@ class SensorWidget(BoxLayout):
     temperature_unit = StringProperty('')
     pressure = StringProperty('????')
     humidity = StringProperty('????')
-    battery = StringProperty('????')
-    update = StringProperty('')
-    opacity = NumericProperty(0.0)
+    battery = StringProperty('')
+    wifi = StringProperty('')
+    last_update = StringProperty('')
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -46,13 +47,14 @@ class SensorWidget(BoxLayout):
         Logger.info("Message: " + "topic= " + msg.topic +" msg= "+ msg.payload)
 
         data = SensorData.from_dict(json.loads(msg.payload))
+        self.battery = f"{data.battery/1000.0:.1f}" + " " + self.cfg.params["kivy"]['battery_unit']
+        self.wifi = f"{data.wifi:.0f}" + " " + self.cfg.params["kivy"]['wifi_unit']
 
-        self.temperature = f"{data.temperature:.1f}"
+        self.temperature = f"{data.sensors.bme280.temperature:.1f}"
         self.temperature_unit = self.cfg.params["kivy"]['temperature_unit']
-        self.pressure = f"{data.pressure:.0f}" + " " + self.cfg.params["kivy"]['pressure_unit']
-        self.humidity = f"{data.humidity:.1f}" + " " + self.cfg.params["kivy"]['humidity_unit']
-        self.battery = f"{data.battery:.0f}" + " " + " " + self.cfg.params["kivy"]['battery_unit']
-        self.update = f"{datetime.datetime.today():%H:%M}"
+        self.pressure = f"{data.sensors.bme280.pressure:.0f}" + " " + self.cfg.params["kivy"]['pressure_unit']
+        self.humidity = f"{data.sensors.bme280.humidity:.1f}" + " " + self.cfg.params["kivy"]['humidity_unit']
+        self.last_update = f"{datetime.datetime.today():%H:%M}"
 
         # Opacity can not be changed directly. You would get this error:
         # "Cannot change graphics instruction outside the main Kivy thread"
