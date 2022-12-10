@@ -4,7 +4,7 @@ openweather:
   lon: 16.302153494876826
   units: metric
   lang: de
-  appid: abdb6964a969eeceed4f072180f1d3a7  # your api key
+  appid: xxxx  # your api key
   interval: 300  # Call every 5 Minutes (300 seconds), so we have 288 calls per day
 
 kivy:
