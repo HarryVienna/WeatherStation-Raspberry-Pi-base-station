@@ -1,10 +1,10 @@
-#:import SensorWidget sensor_widget
+#:import SensorBme280Widget sensor_bme280_widget
 #:import CurrentWidget current_widget
 #:import ForecastHourlyWidget forecast_hourly_widget
 #:import ForecastDailyWidget forecast_daily_widget
 #:import utils kivy.utils
 
-<SensorWidget>:
+<SensorBme280Widget>:
     canvas.before:
         Color:
             rgba: utils.get_color_from_hex("#FFFFFF")
@@ -13,6 +13,7 @@
             size: self.width, self.height
             radius: [10,]
     orientation: 'vertical'
+    opacity: root.opacity
 
     BoxLayout: # Name
         size_hint: 1, 0.15
@@ -398,18 +399,15 @@
             CurrentWidget:
                 id: current_widget
                 size_hint: 0.46, 1
-            SensorWidget:
-                id: balkon_widget
+            SensorBme280Widget:
                 name: "Balkon"
                 topic: '/weatherstation/sensor/10'
                 size_hint: 0.18, 1
-            SensorWidget:
-                id: wohnzimmer_widget
+            SensorBme280Widget:
                 name: "Wohnzimmer"
                 topic: '/weatherstation/sensor/01'
                 size_hint: 0.18, 1
-            SensorWidget:
-                id: schlafzimmer_widget
+            SensorBme280Widget:
                 name: "Schlafzimmer"
                 topic: '/weatherstation/sensor/00'
                 size_hint: 0.18, 1
