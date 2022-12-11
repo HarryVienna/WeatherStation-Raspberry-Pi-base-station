@@ -16,10 +16,10 @@ class WeatherStationApp(App):
         self.kv_directory = self.cfg.params["kivy"]['kv_directory']
 
     def build(self):
-        Window.use_syskeyboard = False
-        Window.allow_vkeyboard = True
-        Window.single_vkeyboard = True
-        Window.docked_vkeyboard = False
+        # Window.use_syskeyboard = False
+        # Window.allow_vkeyboard = True
+        # Window.single_vkeyboard = True
+        # Window.docked_vkeyboard = False
 
         locale.setlocale(locale.LC_TIME, self.cfg.params["kivy"]['locale'])
 
