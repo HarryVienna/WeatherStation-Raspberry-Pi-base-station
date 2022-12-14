@@ -41,6 +41,7 @@ class ForecastHourlyWidget(Widget):
                 PushMatrix()
                 Translate(self.x + self.offset_x_left, self.y + self.offset_y_bottom)
 
+            self.redraw_clouds()
             self.redraw_legend()
             self.redraw_rain()
             self.redraw_temperatures()
@@ -102,36 +103,58 @@ class ForecastHourlyWidget(Widget):
                 hour_pos += pix_hour
                 cnt += 1
 
+    def redraw_clouds(self):
+        with self.canvas:
+            pix_hour = self._get_chart_width() / 48
+            day_pos = 0
+            for hourly in self.weather_data.hourly:
+                clouds = 1 - hourly.clouds / 100
+
+                Color(*get_color_from_hex('#FAF02F' + '{0:02x}'.format(round(clouds * 255))))
+                Rectangle(pos=(day_pos, 1),
+                          size=(pix_hour, self._get_chart_height() - 2)
+                          )
+                day_pos = day_pos + pix_hour
     def redraw_rain(self):
         with self.canvas:
-            pix_day = self._get_chart_width() / 48
-            day_pos = 0
+            pix_hour = self._get_chart_width() / 48
+            hour_pos = 0
 
-            for daily in self.weather_data.hourly:
-                pop = daily.pop
-                rain = daily.rain
-                snow = daily.snow
+            for hourly in self.weather_data.hourly:
+                pop = hourly.pop
+                rain = hourly.rain.one_hour if hourly.rain is not None else 0
+                snow = hourly.snow.one_hour if hourly.snow is not None else 0
 
-                if rain is not None and rain.one_hour > self.max_precipitation:
+                if rain > self.max_precipitation:
                     rain = self.max_precipitation
-                if snow is not None and snow.one_hour > self.max_precipitation:
+
+                if snow > self.max_precipitation:
                     snow = self.max_precipitation
 
-                if rain is not None:
+                if rain > 0:
+                    Color(*get_color_from_hex('#FFFFFF'))
+                    Rectangle(pos=(hour_pos, 1),
+                              size=(pix_hour - 1, self.precipitation_to_pixel(rain, 0, 5)))
                     Color(*get_color_from_hex('#96C6F5' + '{0:02x}'.format(round(pop * 255))))
-                    Rectangle(pos=(day_pos, 0),
-                              size=(pix_day - 1, self.precipitation_to_pixel(rain.one_hour, 0, 5)))
-                elif snow is not None:
+                    Rectangle(pos=(hour_pos, 1),
+                              size=(pix_hour - 1, self.precipitation_to_pixel(rain, 0, 5)))
+                elif snow > 0:
+                    Color(*get_color_from_hex('#FFFFFF'))
+                    Rectangle(pos=(hour_pos, 1),
+                              size=(pix_hour - 1, self.precipitation_to_pixel(snow, 0, 5)))
                     Color(*get_color_from_hex('#EB8DFA' + '{0:02x}'.format(round(pop * 255))))
-                    Rectangle(pos=(day_pos, 0),
-                              size=(pix_day - 1, self.precipitation_to_pixel(snow.one_hour, 0, 5)))
+                    Rectangle(pos=(hour_pos, 1),
+                              size=(pix_hour - 1, self.precipitation_to_pixel(snow, 0, 5)))
                 elif pop > 0:
                     # There is a probability of precipitation value > 0 but no rain data. Assume 0.025 for visualization
+                    Color(*get_color_from_hex('#FFFFFF'))
+                    Rectangle(pos=(hour_pos, 1),
+                              size=(pix_hour - 1, self.precipitation_to_pixel(0.025, 0, 5)))
                     Color(*get_color_from_hex('#2E61F5' + '{0:02x}'.format(round(pop * 255))))
-                    Rectangle(pos=(day_pos, 0),
-                              size=(pix_day - 1, self.precipitation_to_pixel(0.025, 0, 5)))
+                    Rectangle(pos=(hour_pos, 1),
+                              size=(pix_hour - 1, self.precipitation_to_pixel(0.025, 0, 5)))
 
-                day_pos = day_pos + pix_day
+                hour_pos = hour_pos + pix_hour
 
     def redraw_temperatures(self):
         with self.canvas:

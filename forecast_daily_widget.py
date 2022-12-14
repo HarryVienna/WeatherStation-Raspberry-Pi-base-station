@@ -36,6 +36,7 @@ class ForecastDailyWidget(Widget):
                 PushMatrix()
                 Translate(self.x + self.offset_x_left, self.y + self.offset_y_bottom)
 
+            self.redraw_clouds()
             self.redraw_legend()
             self.redraw_rain()
             # self.redraw_temperatures_curves()
@@ -107,6 +108,19 @@ class ForecastDailyWidget(Widget):
                           pos=(-26, self._temperature_to_pixel(tick, min_5_temp, max_5_temp) - 8),
                           texture=text)
 
+    def redraw_clouds(self):
+        with self.canvas:
+            pix_day = self._get_chart_width() / 8
+            day_pos = 0
+            for daily in self.weather_data.daily:
+                clouds = 1 - daily.clouds / 100
+
+                Color(*get_color_from_hex('#FAF02F' + '{0:02x}'.format(round(clouds * 255))))
+                Rectangle(pos=(round(day_pos + 3), 1),
+                          size=(round(pix_day - 6), self._get_chart_height() - 2)
+                          )
+
+                day_pos = day_pos + pix_day
     def redraw_rain(self):
         with self.canvas:
             pix_day = self._get_chart_width() / 8
@@ -114,13 +128,18 @@ class ForecastDailyWidget(Widget):
             for daily in self.weather_data.daily:
                 rain = daily.rain
                 snow = daily.snow
+                clouds = 1 - daily.clouds / 100
 
+                if rain is None:
+                    rain = 0
                 if rain is not None and rain > self.max_precipitation:
                     rain = self.max_precipitation
+                if snow is None:
+                    snow = 0
                 if snow is not None and snow > self.max_precipitation:
                     snow = self.max_precipitation
 
-                if rain is not None and snow is not None:
+                if rain > 0 and snow > 0:
                     Color(*get_color_from_hex('#FFFFFF'))
                     colors = (get_color_from_hex("#EB8DFA"),
                               get_color_from_hex("#96C6F5" ) )
@@ -130,16 +149,25 @@ class ForecastDailyWidget(Widget):
 
                     Rectangle(texture=texture, pos=(round(day_pos + 3), 1),
                               size=(round(pix_day - 6), self._precipitation_to_pixel(rain+snow, 0, self.max_precipitation)))
-                elif rain is not None:
+                elif rain > 0:
+                    Color(*get_color_from_hex('#FFFFFF'))
+                    Rectangle(pos=(round(day_pos + 3), 1),
+                              size=(round(pix_day - 6), self._precipitation_to_pixel(rain, 0, self.max_precipitation))
+                              )
                     Color(*get_color_from_hex('#96C6F5' + '{0:02x}'.format(round(daily.pop * 255))))
                     Rectangle(pos=(round(day_pos + 3), 1),
                               size=(round(pix_day - 6), self._precipitation_to_pixel(rain, 0, self.max_precipitation))
                               )
-                elif snow is not None:
+                elif snow > 0:
+                    Color(*get_color_from_hex('#FFFFFF'))
+                    Rectangle(pos=(round(day_pos + 3), 1),
+                              size=(round(pix_day - 6), self._precipitation_to_pixel(snow, 0, self.max_precipitation))
+                              )
                     Color(*get_color_from_hex('#EB8DFA' + '{0:02x}'.format(round(daily.pop * 255))))
                     Rectangle(pos=(round(day_pos + 3), 1),
                               size=(round(pix_day - 6), self._precipitation_to_pixel(snow, 0, self.max_precipitation))
                               )
+
                 day_pos = day_pos + pix_day
 
     def redraw_temperatures_lines(self):
