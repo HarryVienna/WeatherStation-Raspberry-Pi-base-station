@@ -36,8 +36,8 @@ class WeatherStation(Widget):
 
 
         # -- for debugging --
-        # f = open("tests/json/test22.json", mode="r", encoding="utf-8")
-        # data = OpenWeatherData.from_dict(json.loads(f.read()))
+        #f = open("tests/json/test24.json", mode="r", encoding="utf-8")
+        #data = OpenWeatherData.from_dict(json.loads(f.read()))
         # -------------------
 
         data = self.open_weather_api.getdata()

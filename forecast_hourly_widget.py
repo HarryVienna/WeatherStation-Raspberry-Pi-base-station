@@ -109,6 +109,8 @@ class ForecastHourlyWidget(Widget):
             day_pos = 0
             for hourly in self.weather_data.hourly:
                 clouds = 1 - hourly.clouds / 100
+                # 0-100 -> 40-100
+                clouds = 0.8 * clouds + 0.2 if clouds > 0 else 0
 
                 Color(*get_color_from_hex('#FAF02F' + '{0:02x}'.format(round(clouds * 255))))
                 Rectangle(pos=(day_pos, 1),
