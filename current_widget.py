@@ -36,15 +36,15 @@ class CurrentWidget(BoxLayout):
 
         self.icon = f"icons/weather/{self.weather_data.current.weather[0].icon}.png"
         self.temperature = f"{self.weather_data.current.temp:.1f}"
-        self.temperature_unit = self.cfg.params["kivy"]['temperature_unit']
+        self.temperature_unit = self.cfg.params["app"]['temperature_unit']
         self.min_temperature = f"{self.weather_data.daily[0].temp.minimum:.1f}"
         self.max_temperature = f"{self.weather_data.daily[0].temp.maximum:.1f}"
 
-        self.pressure = f"{self.weather_data.current.pressure:.0f}" + " " + self.cfg.params["kivy"]['pressure_unit']
-        self.humidity = f"{self.weather_data.current.humidity:.0f}" + " " + self.cfg.params["kivy"]['humidity_unit']
-        self.wind = f"{self.weather_data.current.wind_speed:.1f}" + " " + self.cfg.params["kivy"]['wind_unit']
+        self.pressure = f"{self.weather_data.current.pressure:.0f}" + " " + self.cfg.params["app"]['pressure_unit']
+        self.humidity = f"{self.weather_data.current.humidity:.0f}" + " " + self.cfg.params["app"]['humidity_unit']
+        self.wind = f"{self.weather_data.current.wind_speed:.1f}" + " " + self.cfg.params["app"]['wind_unit']
         self.wind_deg = self.weather_data.current.wind_deg * (-1)
-        self.clouds = f"{self.weather_data.current.clouds:.0f}" + " " + self.cfg.params["kivy"]['clouds_unit']
+        self.clouds = f"{self.weather_data.current.clouds:.0f}" + " " + self.cfg.params["app"]['clouds_unit']
 
         self.sunrise = f"{self.weather_data.current.sunrise:%H:%M}"
         self.sunset = f"{self.weather_data.current.sunset:%H:%M}"

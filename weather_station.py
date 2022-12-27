@@ -1,14 +1,11 @@
-import json
 from datetime import datetime
 
 from kivy import Logger
 from kivy.clock import Clock
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 
 from config import Config
 from open_weather_api import OpenWeatherApi
-from open_weather_data import OpenWeatherData
 
 
 class WeatherStation(Widget):
@@ -33,11 +30,9 @@ class WeatherStation(Widget):
     def update_weather(self, dt):
         Logger.info("update_weather: start")
 
-
-
         # -- for debugging --
-        #f = open("tests/json/test24.json", mode="r", encoding="utf-8")
-        #data = OpenWeatherData.from_dict(json.loads(f.read()))
+        # f = open("tests/json/test24.json", mode="r", encoding="utf-8")
+        # data = OpenWeatherData.from_dict(json.loads(f.read()))
         # -------------------
 
         data = self.open_weather_api.getdata()
@@ -51,4 +46,3 @@ class WeatherStation(Widget):
 
     def update_time(self, dt):
         self.ids.current_widget.time_data = datetime.today()
-

@@ -1,7 +1,6 @@
 import locale
 
 from kivy.app import App
-from kivy.core.window import Window
 
 from config import Config
 from weather_station import WeatherStation
@@ -13,7 +12,7 @@ class WeatherStationApp(App):
         super().__init__()
 
         self.cfg = Config("config/config.yaml")
-        self.kv_directory = self.cfg.params["kivy"]['kv_directory']
+        self.kv_directory = self.cfg.params["app"]['kv_directory']
 
     def build(self):
         # Window.use_syskeyboard = False
@@ -21,7 +20,7 @@ class WeatherStationApp(App):
         # Window.single_vkeyboard = True
         # Window.docked_vkeyboard = False
 
-        locale.setlocale(locale.LC_TIME, self.cfg.params["kivy"]['locale'])
+        locale.setlocale(locale.LC_TIME, self.cfg.params["app"]['locale'])
 
         return WeatherStation()
 

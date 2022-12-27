@@ -66,7 +66,6 @@ class ForecastDailyWidget(Widget):
                 Line(points=[day_pos, 0, day_pos, self._get_chart_height()], width=1)
                 day_pos += pix_day
 
-
             # Day names
             day_pos = pix_day / 2 - 8
             Color(*get_color_from_hex('#000000'))
@@ -87,7 +86,8 @@ class ForecastDailyWidget(Widget):
                 label.refresh()
                 text = label.texture
                 Rectangle(size=text.size,
-                          pos=(self._get_chart_width() + 5, self._precipitation_to_pixel(tick, 0, self.max_precipitation) - 8),
+                          pos=(self._get_chart_width() + 5,
+                               self._precipitation_to_pixel(tick, 0, self.max_precipitation) - 8),
                           texture=text)
 
             # Temperature ticks
@@ -123,6 +123,7 @@ class ForecastDailyWidget(Widget):
                           )
 
                 day_pos = day_pos + pix_day
+
     def redraw_rain(self):
         with self.canvas:
             pix_day = self._get_chart_width() / 8
@@ -130,7 +131,6 @@ class ForecastDailyWidget(Widget):
             for daily in self.weather_data.daily:
                 rain = daily.rain
                 snow = daily.snow
-                clouds = 1 - daily.clouds / 100
 
                 if rain is None:
                     rain = 0
@@ -144,13 +144,14 @@ class ForecastDailyWidget(Widget):
                 if rain > 0 and snow > 0:
                     Color(*get_color_from_hex('#FFFFFF'))
                     colors = (get_color_from_hex("#EB8DFA"),
-                              get_color_from_hex("#96C6F5" ) )
-                    texture = Texture.create(size=(1,len(colors)), colorfmt='rgba', bufferfmt='ubyte')
+                              get_color_from_hex("#96C6F5"))
+                    texture = Texture.create(size=(1, len(colors)), colorfmt='rgba', bufferfmt='ubyte')
                     buf = bytes([int(v * 255) for v in chain(*colors)])
                     texture.blit_buffer(buf, colorfmt='rgba', bufferfmt='ubyte')
 
                     Rectangle(texture=texture, pos=(round(day_pos + 3), 1),
-                              size=(round(pix_day - 6), self._precipitation_to_pixel(rain+snow, 0, self.max_precipitation)))
+                              size=(
+                              round(pix_day - 6), self._precipitation_to_pixel(rain + snow, 0, self.max_precipitation)))
                 elif rain > 0:
                     Color(*get_color_from_hex('#FFFFFF'))
                     Rectangle(pos=(round(day_pos + 3), 1),
@@ -180,15 +181,17 @@ class ForecastDailyWidget(Widget):
 
             for daily in self.weather_data.daily:
                 Color(rgba=get_color_from_hex("#0000F4"))
-                Rectangle(pos=(round(day_pos + 3), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)),
-                          size=(round(pix_day - 6), 3))
+                Rectangle(
+                    pos=(round(day_pos + 3), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)),
+                    size=(round(pix_day - 6), 3))
                 # Line(points=[round(day_pos + 3), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp),
                 #              round(day_pos + pix_day - 6), self._temperature_to_pixel(daily.temp.minimum, min_5_temp, max_5_temp)],
                 #      width=1)
 
                 Color(rgba=get_color_from_hex("#F40000"))
-                Rectangle(pos=(round(day_pos + 3), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)),
-                          size=(round(pix_day - 6), 3))
+                Rectangle(
+                    pos=(round(day_pos + 3), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)),
+                    size=(round(pix_day - 6), 3))
                 # Line(points=[round(day_pos + 3), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp),
                 #              round(day_pos + pix_day - 6), self._temperature_to_pixel(daily.temp.maximum, min_5_temp, max_5_temp)],
                 #      width=1)
@@ -203,7 +206,6 @@ class ForecastDailyWidget(Widget):
             temp_min_values = []
             temp_max_values = []
             for daily in self.weather_data.daily:
-
                 # temp_values.append(daily.temp.minimum)
                 # temp_values.append(daily.temp.morn)
                 # temp_values.append(daily.temp.day)
@@ -267,7 +269,7 @@ class ForecastDailyWidget(Widget):
         max_sqrt = math.sqrt(max_value)
 
         pix = (value_sqrt - min_sqrt) / (max_sqrt - min_sqrt) * self._get_chart_height()
-        #pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
+        # pix = (value - min_value) / (max_value - min_value) * self._get_chart_height()
         return round(pix)
 
     def _get_chart_width(self):

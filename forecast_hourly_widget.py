@@ -2,7 +2,7 @@ import math
 
 from kivy.core.text import Label
 from kivy.graphics import Color, PushMatrix, PopMatrix, Translate, Line, Rectangle
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.properties import ObjectProperty
 from kivy.uix.widget import Widget
 from kivy.utils import get_color_from_hex
 from scipy.interpolate import interp1d
@@ -23,7 +23,7 @@ class ForecastHourlyWidget(Widget):
         self.offset_y_bottom = 35
         self.offset_y_top = 20
 
-        #self.bind(size=self._update, pos=self._update)
+        # self.bind(size=self._update, pos=self._update)
 
     # def _update(self, instance, value):
     #     print("_update")
@@ -58,7 +58,8 @@ class ForecastHourlyWidget(Widget):
                 label.refresh()
                 text = label.texture
                 Rectangle(size=text.size,
-                          pos=(self._get_chart_width() + 5, self.precipitation_to_pixel(tick, 0, self.max_precipitation) - 8),
+                          pos=(self._get_chart_width() + 5,
+                               self.precipitation_to_pixel(tick, 0, self.max_precipitation) - 8),
                           texture=text)
 
             # Temperature ticks
@@ -117,6 +118,7 @@ class ForecastHourlyWidget(Widget):
                           size=(pix_hour, self._get_chart_height() - 2)
                           )
                 day_pos = day_pos + pix_hour
+
     def redraw_rain(self):
         with self.canvas:
             pix_hour = self._get_chart_width() / 48
