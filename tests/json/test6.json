@@ -1764,6 +1764,16 @@
       "tags": [
         "Rain"
       ]
+    },
+    {
+      "sender_name": "ZAMG Zentralanstalt für Meteorologie und Geodynamik",
+      "event": "Rainwarning2",
+      "start": 1661086800,
+      "end": 1661259600,
+      "description": "xxxx rain xxx between 30 and 60 mm are expected.",
+      "tags": [
+        "Rain"
+      ]
     }
   ]
 }

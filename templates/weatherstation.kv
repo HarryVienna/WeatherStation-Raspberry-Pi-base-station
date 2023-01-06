@@ -2,7 +2,17 @@
 #:import CurrentWidget current_widget
 #:import ForecastHourlyWidget forecast_hourly_widget
 #:import ForecastDailyWidget forecast_daily_widget
+#:import AlertWidget alert_widget
 #:import utils kivy.utils
+
+<AlertWidget>:
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex("#FFFFFF")
+        RoundedRectangle:
+            pos: self.x, self.y
+            size: self.width, self.height
+            radius: [10,]
 
 <SensorBme280Widget>:
     canvas.before:
@@ -392,6 +402,8 @@
         spacing: 5
         padding: 5
 
+
+
         BoxLayout:
             spacing: 5
             size_hint: 1, 0.35
@@ -415,7 +427,7 @@
         BoxLayout:
             spacing: 5
             padding: 0
-            size_hint: 1, 0.65
+            size_hint: 1, 0.6
             orientation: 'horizontal'
             ForecastHourlyWidget:
                 id: forecast_hourly_widget
@@ -423,3 +435,10 @@
             ForecastDailyWidget:
                 id: forecast_daily_widget
                 size_hint: 0.5, 1
+
+        AlertWidget:
+            id: alert_widget
+
+            spacing: 5
+            size_hint: 1, 0.05
+            text: "Increased cold stress must be expected."
