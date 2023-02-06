@@ -16,7 +16,7 @@ class AlertWidget(ScrollView):
         self.bind(pos=self.update_text_position)
         self.bind(size=self.update_text_position)
 
-        Clock.schedule_interval(self.update_text_position, 1 / 10)
+        #Clock.schedule_interval(self.update_text_position, 1 / 10)
 
     def on_weather_data(self, instance, value):
         alerts_list = []
