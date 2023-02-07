@@ -33,8 +33,12 @@ class WeatherStation(Widget):
         Logger.info("update_weather: start")
 
         # -- for debugging --
-        #f = open("tests/json/test6.json", mode="r", encoding="utf-8")
-        #data = OpenWeatherData.from_dict(json.loads(f.read()))
+        # data = None
+        # f = open("tests/json/test32.json", mode="r", encoding="utf-8")
+        # try:
+        #     data = OpenWeatherData.from_dict(json.loads(f.read()))
+        # except Exception:
+        #     Logger.error('AssertionError', exc_info=False)
         # -------------------
 
         data = self.open_weather_api.getdata()

@@ -24,27 +24,26 @@ class OpenWeatherApi:
                                                       "lon": self.lon,
                                                       "units": self.units,
                                                       "lang": self.lang,
-                                                      "appid": self.appid}, verify=False)
+                                                      "appid": self.appid}, verify=True)
             response.raise_for_status()
         except requests.exceptions.HTTPError:
-            Logger.info('Error Calling API')
+            Logger.error('Error Calling API')
             return None
         except requests.exceptions.ConnectionError:
-            Logger.info('Error Calling API')
+            Logger.error('Error Calling API')
             return None
         except requests.exceptions.Timeout:
-            Logger.info('Error Calling API')
+            Logger.error('Error Calling API')
             return None
         except requests.exceptions.RequestException:
-            Logger.info('Error Calling API')
+            Logger.error('Error Calling API')
             return None
 
-        #Logger.info(response.content)
         weather_data = None
         try:
             weather_data = OpenWeatherData.from_dict(response.json())
-        except AssertionError:
-            Logger.error('AssertionError', exc_info=True)
-            Logger.error(response.json(), exc_info=False)
+        except:
+            Logger.error('Error reading content %s', response.text, exc_info=False)
+
         Logger.info('Calling API end')
         return weather_data
